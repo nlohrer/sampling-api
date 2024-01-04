@@ -1,0 +1,5 @@
+@SamplingAPI_HostAddress = http://localhost:5120
+
+GET {{SamplingAPI_HostAddress}}/api/estimation
+
+###

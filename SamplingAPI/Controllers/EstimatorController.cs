@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SamplingAPI.Models;
+using SamplingAPI.Services;
 
 namespace SamplingAPI.Controllers;
 
@@ -6,9 +8,16 @@ namespace SamplingAPI.Controllers;
 [Route("api/[controller]")]
 public class EstimatorController : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult<string>> HelloWorld()
+    private IEstimationService EstimationService;
+    public EstimatorController(IEstimationService estimationService)
     {
-        return Ok("Hello, world!");
+        EstimationService = estimationService;
+    }
+
+    [HttpPost("srs")]
+    public async Task<ActionResult<Estimator>> EstimateSRS(SimpleRandomSample srs)
+    {
+        Estimator result = EstimationService.EstimateSRS(srs);
+        return Ok(result);
     }
 }

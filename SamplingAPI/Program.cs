@@ -1,8 +1,10 @@
 using Microsoft.OpenApi.Models;
+using SamplingAPI.Services;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddScoped<IEstimationService, EstimationService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -31,6 +33,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
 
 public partial class Program { }

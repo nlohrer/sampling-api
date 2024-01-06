@@ -15,7 +15,8 @@ builder.Services.AddSwaggerGen(options =>
         Description = "An API to provide useful tools for sampling",
         Version = "v1"
     });
-    string xmlFilename = $"{Assembly.GetExecutingAssembly().Location}.xml";
+    string xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 var app = builder.Build();

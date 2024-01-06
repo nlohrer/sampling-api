@@ -1,4 +1,4 @@
-﻿using SamplingAPI.MathHelpers;
+﻿using SamplingAPI.Stats;
 using SamplingAPI.Models;
 
 namespace SamplingAPI.Services;

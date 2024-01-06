@@ -1,6 +1,6 @@
 ﻿using SamplingAPI.Models;
 
-namespace SamplingAPI.MathHelpers;
+namespace SamplingAPI.Stats;
 
 public class GeneralFunctions
 {

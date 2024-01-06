@@ -22,7 +22,7 @@ public class EstimationTests
     public void EstimateSRSVarianceWithReplacement(double exp, params double[] values)
     {
         double mean = MeanFunctions.SRSMean(values);
-        double actual = Math.Round(VarianceFunctions.SRSVarianceWithReplacement(values, mean), 4);
+        double actual = Math.Round(VarianceFunctions.SRSVariance(values, mean, true), 4);
         double expected = Math.Round(exp, 4);
         Assert.Equal(expected, actual);
     }
@@ -34,7 +34,7 @@ public class EstimationTests
     public void EstimateSRSVarianceWithoutReplacement(double exp, int populationSize, params double[] values)
     {
         double mean = MeanFunctions.SRSMean(values);
-        double actual = Math.Round(VarianceFunctions.SRSVarianceWithoutReplacement(values, mean, populationSize), 4);
+        double actual = Math.Round(VarianceFunctions.SRSVariance(values, mean, false, populationSize), 4);
         double expected = Math.Round(exp, 4);
         Assert.Equal(expected, actual);
     }

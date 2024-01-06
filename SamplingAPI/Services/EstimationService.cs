@@ -18,11 +18,11 @@ public class EstimationService : IEstimationService
         double variance;
         if (srs.WithReplacement || srs.PopulationSize is null)
         {
-            variance = VarianceFunctions.SRSVarianceWithReplacement(data, mean);
+            variance = VarianceFunctions.SRSVariance(data, mean, true);
         }
         else
         {
-            variance = VarianceFunctions.SRSVarianceWithoutReplacement(data, mean, (int) srs.PopulationSize);
+            variance = VarianceFunctions.SRSVariance(data, mean, false, (int) srs.PopulationSize);
         }
 
         ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, srs.SignificanceLevel);

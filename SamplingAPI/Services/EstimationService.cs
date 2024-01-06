@@ -58,4 +58,19 @@ public class EstimationService : IEstimationService
         return new Estimator(mean, variance, ci);
     }
 
+    /// <summary>
+    /// Estimate the mean of a sample based on a design.
+    /// </summary>
+    /// <param name="sample">A DesignSample object representing the sample data and additional iniformation required for estimation.</param>
+    /// <returns>An estimator for the mean of the entire population.</returns>
+    public Estimator EstimateDesign(DesignSample sample)
+    {
+        double[] data = sample.Data[sample.TargetColumn];
+        double[] inclusionProbabilities = sample.Data[sample.InclusionProbabilityColumn];
+
+        double mean = MeanFunctions.HTMean(data, inclusionProbabilities, sample.PopulationSize);
+        double variance = VarianceFunctions.HHVariance(data, inclusionProbabilities, mean, sample.PopulationSize);
+        ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, sample.SignificanceLevel);
+        return new Estimator(mean, variance, ci);
+    }
 }

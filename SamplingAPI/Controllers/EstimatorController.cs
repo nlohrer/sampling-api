@@ -56,4 +56,39 @@ public class EstimatorController : ControllerBase
         Estimator result = EstimationService.EstimateModel(sample, modelType);
         return Ok(result);
     }
+
+
+    /// <summary>
+    /// Use a design-based estimation for a population mean based on a sample. In order to avoid second-order inclusion probabilities a Hansen-Hurwitz estimator is always used to estimate the variance of the mean estimator.
+    /// </summary>
+    /// <param name="sample">The sample data.</param>
+    /// <returns>An estimator for the mean of a population.</returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     {
+    ///         "targetColumn": "age",
+    ///         "inclusionProbabilityColumn": "inclusionProbs",
+    ///         "populationSize": 20,
+    ///         "data": {
+    ///             "age": [
+    ///                 4, 9, 24
+    ///             ],
+    ///             "inclusionProbs": [
+    ///                 0.05, 0.1, 0.125
+    ///             ]
+    ///         },
+    ///         "significanceLevel": 5
+    ///     }
+    /// </remarks>
+    /// <response code="200">If the estimation could be performed successfully</response>
+    /// <response code="400">If either the the sample model was not valid.</response>
+    [HttpPost("design")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Estimator>> EstimateDesignBased(DesignSample sample)
+    {
+        Estimator result = EstimationService.EstimateDesign(sample);
+        return Ok(result);
+    }
 }

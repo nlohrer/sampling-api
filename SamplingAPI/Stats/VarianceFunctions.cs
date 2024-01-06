@@ -87,6 +87,14 @@ public class VarianceFunctions
             sumOfSquares;
     }
 
+    /// <summary>
+    /// Estimates the variance of a mean with Hansen-Hurwitz estimation.
+    /// </summary>
+    /// <param name="data">The data used for the mean estimation.</param>
+    /// <param name="inclusionProbabilities">The respective inclusion probabilities for the sample data.</param>
+    /// <param name="mean">The estimated mean.</param>
+    /// <param name="populationSize">The total size of the population.</param>
+    /// <returns>The estimated variance of the estimated mean.</returns>
     public static double HHVariance(double[] data, double[] inclusionProbabilities, double mean, int populationSize)
     {
         double n = data.Length;

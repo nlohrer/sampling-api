@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
-using SamplingAPI;
-using System.Text;
 
 namespace APITests;
 
@@ -81,5 +79,33 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
         var responseInvalidModel = await _client.PostAsync($"{Url}/model?modelType=sum", content);
         Assert.Equal(HttpStatusCode.BadRequest, responseInvalidModel.StatusCode);
+    }
+
+    [Fact]
+    public async Task DesignEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "targetColumn": "age",
+            "inclusionProbabilityColumn": "inclusionProbs",
+            "populationSize": 20,
+            "data": {
+                "age": [
+                    4, 9, 24
+                ],
+                "inclusionProbs": [
+                    0.05, 0.1, 0.125
+                ]
+            },
+            "significanceLevel": 5
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{Url}/design", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string actual = await response.Content.ReadAsStringAsync();
+        string expected = "{\"mean\":18.1,\"variance\":28.810000000000016,\"confidenceInterval\":{\"lowerBound\":7.5797102701494,\"upperBound\":28.620289729850604,\"significanceLevel\":5}}";
+        Assert.Equal(expected, actual);
     }
 }

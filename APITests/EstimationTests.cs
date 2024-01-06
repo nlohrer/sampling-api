@@ -133,4 +133,53 @@ public class EstimationTests
         double expected = Math.Round(exp, 2);
         Assert.Equal(expected, actual);
     }
+
+    [Theory]
+    [InlineData(20, 1, 2, 3)]
+    [InlineData(20.5, 1, 2, 4)]
+    [InlineData(36.5, 1, 2, 5)]
+    [InlineData(16, 1, 3, 4)]
+    [InlineData(32, 1, 3, 5)]
+    [InlineData(32.5, 1, 4, 5)]
+    [InlineData(21.5, 2, 3, 4)]
+    [InlineData(37.5, 2, 3, 5)]
+    [InlineData(38, 2, 4, 5)]
+    [InlineData(33.5, 3, 4, 5)]
+    public void EstimateHTMeans(double exp, params int[] drawn)
+    {
+        IEnumerable<double> data = [9, 10, 11, 18, 22];
+        IEnumerable<double> inclusionProbabilities = [0.1, 0.05, 0.1, 0.15, 0.05];
+        double[] dataDrawn = data.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        double[] drawnProbabilities = inclusionProbabilities.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        int populationSize = 20;
+
+        double actual = Math.Round(MeanFunctions.HTMean(dataDrawn, drawnProbabilities, populationSize), 2);
+        double expected = Math.Round(exp, 2);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(25.75, 1, 2, 3)]
+    [InlineData(24.25, 1, 2, 4)]
+    [InlineData(240.25, 1, 2, 5)]
+    [InlineData(1.75, 1, 3, 4)]
+    [InlineData(289.75, 1, 3, 5)]
+    [InlineData(282.25, 1, 4, 5)]
+    [InlineData(18.25, 2, 3, 4)]
+    [InlineData(218.25, 2, 3, 5)]
+    [InlineData(208.00, 2, 4, 5)]
+    [InlineData(264.25, 3, 4, 5)]
+    public void EstimateHHVariance(double exp, params int[] drawn)
+    {
+        IEnumerable<double> data = [9, 10, 11, 18, 22];
+        IEnumerable<double> inclusionProbabilities = [0.1, 0.05, 0.1, 0.15, 0.05];
+        double[] dataDrawn = data.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        double[] drawnProbabilities = inclusionProbabilities.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        int populationSize = 20;
+        double mean = MeanFunctions.HTMean(dataDrawn, drawnProbabilities, populationSize);
+
+        double actual = Math.Round(VarianceFunctions.HHVariance(dataDrawn, drawnProbabilities, mean, populationSize), 2);
+        double expected = Math.Round(exp, 2);
+        Assert.Equal(expected, actual);
+    }
 }

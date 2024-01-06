@@ -10,7 +10,7 @@ public class VarianceFunctions
     /// <param name="data">The data used for the mean estimation.</param>
     /// <param name="mean">The estimated mean.</param>
     /// <param name="withReplacement">Whether the sample was drawn with replacement.</param>
-    /// <param name="populationSize">The size of the total population. Only necessary if the sample was drawn with replacement.</param>
+    /// <param name="populationSize">The total size of the population. Only necessary if the sample was drawn with replacement.</param>
     /// <returns>The estimated variance of the mean.</returns>
     public static double SRSVariance(double[] data, double mean, bool withReplacement, [OptionalAttribute] int? populationSize)
     {
@@ -36,7 +36,7 @@ public class VarianceFunctions
     /// </summary>
     /// <param name="primaryData">The data used for the mean estimation.</param>
     /// <param name="secondaryData">The auxiliary data that was used for the mean estimation.</param>
-    /// <param name="populationSize">The size of the total population.</param>
+    /// <param name="populationSize">The total size of the population.</param>
     /// <returns>The estimated variance of the estimated mean.</returns>
     public static double DiffVariance(double[] primaryData, double[] secondaryData, int populationSize)
     {
@@ -64,7 +64,7 @@ public class VarianceFunctions
     /// </summary>
     /// <param name="primaryData">The data used for the mean estimation.</param>
     /// <param name="secondaryData">The auxiliary data that was used for the mean estimation.</param>
-    /// <param name="populationSize">The size of the total population.</param>
+    /// <param name="populationSize">The total size of the population.</param>
     /// <returns>The estimated variance of the estimated mean.</returns>
     public static double RatioVariance(double[] primaryData, double[] secondaryData, int populationSize)
     {
@@ -83,6 +83,23 @@ public class VarianceFunctions
 
         return 
             populationFactor *
+            (1.0 / (n * (n - 1))) *
+            sumOfSquares;
+    }
+
+    public static double HHVariance(double[] data, double[] inclusionProbabilities, double mean, int populationSize)
+    {
+        double n = data.Length;
+        double N = populationSize;
+
+        IEnumerable<(double y, double p)> zippedData = data.Zip(inclusionProbabilities.Select(pi => pi / n));
+        double sumOfSquares = zippedData.Select(tuple =>
+        {
+            double difference = tuple.y / (N * tuple.p) - mean;
+            return Math.Pow(difference, 2);
+        }).Sum();
+
+        return
             (1.0 / (n * (n - 1))) *
             sumOfSquares;
     }

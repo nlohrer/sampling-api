@@ -57,8 +57,33 @@ public class EstimationTests
         double[] primaryDrawn = primaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
         double[] secondaryDrawn = secondaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
         double secondaryTotalMean = 15;
+
         double actual = Math.Round(MeanFunctions.DiffMean(primaryDrawn, secondaryDrawn, secondaryTotalMean), 4);
         double expected = Math.Round(exp, 4);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(0.13, 1, 2, 3)]
+    [InlineData(0.13, 1, 2, 4)]
+    [InlineData(0.31, 1, 2, 5)]
+    [InlineData(0.31, 1, 3, 4)]
+    [InlineData(0.31, 1, 3, 5)]
+    [InlineData(0.58, 1, 4, 5)]
+    [InlineData(0.31, 2, 3, 4)]
+    [InlineData(0.13, 2, 3, 5)]
+    [InlineData(0.53, 2, 4, 5)]
+    [InlineData(0.58, 3, 4, 5)]
+    public void EstimateDiffVariance(double exp, params int[] drawn)
+    {
+        IEnumerable<double> primaryData = [9, 10, 11, 18, 22];
+        IEnumerable<double> secondaryData = [11, 11, 11, 21, 21];
+        double[] primaryDrawn = primaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        double[] secondaryDrawn = secondaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        int populationSize = 5;
+
+        double actual = Math.Round(VarianceFunctions.DiffVariance(primaryDrawn, secondaryDrawn, populationSize), 2);
+        double expected = Math.Round(exp, 2);
         Assert.Equal(expected, actual);
     }
 
@@ -81,6 +106,30 @@ public class EstimationTests
         double[] secondaryDrawn = secondaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
         double secondaryTotalMean = 15;
         double actual = Math.Round(MeanFunctions.RatioMean(primaryDrawn, secondaryDrawn, secondaryTotalMean), 2);
+        double expected = Math.Round(exp, 2);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(0.13, 1, 2, 3)]
+    [InlineData(0.03, 1, 2, 4)]
+    [InlineData(0.42, 1, 2, 5)]
+    [InlineData(0.16, 1, 3, 4)]
+    [InlineData(0.35, 1, 3, 5)]
+    [InlineData(0.67, 1, 4, 5)]
+    [InlineData(0.14, 2, 3, 4)]
+    [InlineData(0.13, 2, 3, 5)]
+    [InlineData(0.55, 2, 4, 5)]
+    [InlineData(0.55, 3, 4, 5)]
+    public void EstimateRatioVariance(double exp, params int[] drawn)
+    {
+        IEnumerable<double> primaryData = [9, 10, 11, 18, 22];
+        IEnumerable<double> secondaryData = [11, 11, 11, 21, 21];
+        double[] primaryDrawn = primaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        double[] secondaryDrawn = secondaryData.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        int populationSize = 5;
+
+        double actual = Math.Round(VarianceFunctions.RatioVariance(primaryDrawn, secondaryDrawn, populationSize), 2);
         double expected = Math.Round(exp, 2);
         Assert.Equal(expected, actual);
     }

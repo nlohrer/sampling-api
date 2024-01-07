@@ -3,7 +3,7 @@
 public class MeanFunctions
 {
     /// <summary>
-    /// Estimates the mean of a simple random sample.
+    /// Estimates the mean of a population from a simple random sample.
     /// </summary>
     /// <param name="data">The sample data.</param>
     /// <returns>The estimated mean.</returns>
@@ -13,7 +13,7 @@ public class MeanFunctions
     }
 
     /// <summary>
-    /// Estimates the mean of a sample based on a difference model.
+    /// Estimates the mean of a population from a sample based on a difference model.
     /// </summary>
     /// <param name="primaryData">The sample data.</param>
     /// <param name="secondaryData">The auxiliary data used in the model.</param>
@@ -29,7 +29,7 @@ public class MeanFunctions
     }
 
     /// <summary>
-    /// Estimates the mean of a sample based on a ratio model.
+    /// Estimates the mean of a population from a sample based on a ratio model.
     /// </summary>
     /// <param name="primaryData">The sample data.</param>
     /// <param name="secondaryData">The auxiliary data used in the model.</param>
@@ -44,7 +44,7 @@ public class MeanFunctions
     }
 
     /// <summary>
-    /// Horvitz-Thompson estimator for the mean of a sample.
+    /// Horvitz-Thompson estimator for the mean of a population.
     /// </summary>
     /// <param name="data">The sample data.</param>
     /// <param name="inclusionProbabilities">The respective inclusion probabilities for the sample data.</param>
@@ -59,7 +59,7 @@ public class MeanFunctions
     }
 
     /// <summary>
-    /// Estimates the mean of a stratified sample.
+    /// Estimates the mean of a population from a stratified sample.
     /// </summary>
     /// <param name="data">The sample data.</param>
     /// <param name="strata">The stratum that each entry of the sample data belongs to respectively.</param>
@@ -79,5 +79,22 @@ public class MeanFunctions
                 .Average();
         }
         return sum;
+    }
+
+    /// <summary>
+    /// Estimates the mean of a population based on a cluster sampling strategy.
+    /// </summary>
+    /// <param name="data">The sample data.</param>
+    /// <param name="clusterCount">The amount of clusters in the sample.</param>
+    /// <param name="totalClusterCount">The total amount of clusters in the population.</param>
+    /// <param name="populationSize">The total size of the population.</param>
+    /// <returns>The estimated mean.</returns>
+    public static double ClusterMean(double[] data, int clusterCount, int totalClusterCount, int populationSize)
+    {
+        double M = totalClusterCount;
+        double m = clusterCount;
+        double N = populationSize;
+
+        return (M / N) * data.Sum() / m;
     }
 }

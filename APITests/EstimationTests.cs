@@ -228,4 +228,32 @@ public class EstimationTests
         double expected = Math.Round(exp, 2);
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public void EstimateClusterMeans()
+    {
+        double[] data = [135, 180, 160, 225];
+        int totalClusterCount = 40;
+        int clusterCount = 4;
+        int populationSize = 2000;
+
+        double actual = MeanFunctions.ClusterMean(data, clusterCount, totalClusterCount, populationSize);
+        double expected = 3.5;
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void EstimateClusterVariance()
+    {
+        double[] data = [135, 180, 160, 225];
+        int totalClusterCount = 40;
+        int clusterCount = 4;
+        int populationSize = 2000;
+
+        double actual = VarianceFunctions.ClusterVariance(data, clusterCount, totalClusterCount, populationSize);
+        double expected = 0.1305;
+
+        Assert.Equal(expected, actual);
+    }
 }

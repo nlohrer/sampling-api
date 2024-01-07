@@ -5,6 +5,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IEstimationService, EstimationService>();
+builder.Services.AddSingleton<ISamplingService, SamplingService>();     // Adding as a singleton so that the Random object the SamplingService uses is a singleton as well
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

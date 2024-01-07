@@ -31,6 +31,7 @@ public class EstimatorController : ControllerBase
     /// Sample request:
     ///     
     ///     POST /api/estimator/srs
+    ///     
     ///     {
     ///         "targetColumn": "age",
     ///         "withReplacement": false,
@@ -60,6 +61,7 @@ public class EstimatorController : ControllerBase
     /// Sample request:
     ///
     ///     POST /api/estimator/model?modelType=diff
+    ///     
     ///     {
     ///         "targetColumn": "age",
     ///         "auxiliaryColumn": "height",
@@ -97,6 +99,7 @@ public class EstimatorController : ControllerBase
     /// Sample request:
     ///
     ///     POST /api/estimator/design
+    ///     
     ///     {
     ///         "targetColumn": "age",
     ///         "inclusionProbabilityColumn": "inclusionProbs",
@@ -132,6 +135,7 @@ public class EstimatorController : ControllerBase
     /// Sample request:
     ///     
     ///     POST /api/estimator/stratified
+    ///     
     ///     {
     ///         "targetColumn": "age",
     ///         "strata": [
@@ -157,6 +161,44 @@ public class EstimatorController : ControllerBase
     public async Task<ActionResult<Estimator>> EstimateStratified(StratifiedSample sample)
     {
         Estimator result = EstimationService.EstimateStratified(sample);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Estimate a population mean based on a cluster sample.
+    /// </summary>
+    /// <param name="sample">The sample data.</param>
+    /// <param name="equalSizes">Whether the clusters are (roughly) equal in size.</param>
+    /// <returns>An estimator for the mean of a population.</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     POST /api/estimator/stratified?equalSizes=false
+    ///     
+    ///     {
+    ///         "targetColumn": "householdSize",
+    ///         "clusterSizes": [
+    ///             40, 60, 20
+    ///         ],
+    ///         "populationSize": 2000,
+    ///         "clusterCount": 3,
+    ///         "totalClusterCount": 100,
+    ///         "data": {
+    ///             "householdSize": [
+    ///                 140, 200, 80
+    ///             ]
+    ///         },
+    ///         "significanceLevel": 5
+    ///     }
+    /// </remarks>
+    /// <response code="200">If the estimation could be performed successfully</response>
+    /// <response code="400">If the sample model was not valid.</response>
+    [HttpPost("cluster")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Estimator>> EstimateCluster(ClusterSample sample, [FromQuery] bool equalSizes=true)
+    {
+        Estimator result = EstimationService.EstimateCluster(sample, equalSizes);
         return Ok(result);
     }
 }

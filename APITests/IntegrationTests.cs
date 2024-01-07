@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 using System.Net;
 
 namespace APITests;
@@ -6,7 +7,8 @@ namespace APITests;
 public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
-    internal static readonly string Url = "/api/Estimator";
+    internal static readonly string EstimatorUrl = "/api/Estimator";
+    internal static readonly string SampleUrl = "/api/Sample";
 
     public IntegrationTests(WebApplicationFactory<Program> factory)
     {
@@ -30,7 +32,7 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
             }
             """;
         HttpContent content = Helpers.GetJSONContent(body);
-        var response = await _client.PostAsync($"{Url}/srs", content);
+        var response = await _client.PostAsync($"{EstimatorUrl}/srs", content);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string actual = await response.Content.ReadAsStringAsync();
@@ -59,7 +61,7 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         }
         """;
         HttpContent content = Helpers.GetJSONContent(body);
-        var response = await _client.PostAsync($"{Url}/model?modelType=diff", content);
+        var response = await _client.PostAsync($"{EstimatorUrl}/model?modelType=diff", content);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string actual = await response.Content.ReadAsStringAsync();
@@ -74,10 +76,10 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         string body = "";
         HttpContent content = Helpers.GetJSONContent(body);
-        var responseNoModel = await _client.PostAsync($"{Url}/model", content);
+        var responseNoModel = await _client.PostAsync($"{EstimatorUrl}/model", content);
         Assert.Equal(HttpStatusCode.BadRequest, responseNoModel.StatusCode);
 
-        var responseInvalidModel = await _client.PostAsync($"{Url}/model?modelType=sum", content);
+        var responseInvalidModel = await _client.PostAsync($"{EstimatorUrl}/model?modelType=sum", content);
         Assert.Equal(HttpStatusCode.BadRequest, responseInvalidModel.StatusCode);
     }
 
@@ -101,11 +103,34 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         }
         """;
         HttpContent content = Helpers.GetJSONContent(body);
-        var response = await _client.PostAsync($"{Url}/design", content);
+        var response = await _client.PostAsync($"{EstimatorUrl}/design", content);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string actual = await response.Content.ReadAsStringAsync();
         string expected = "{\"mean\":18.1,\"variance\":28.810000000000016,\"confidenceInterval\":{\"lowerBound\":7.5797102701494,\"upperBound\":28.620289729850604,\"significanceLevel\":5}}";
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public async Task SampleSRSEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "age": [
+                23, 54, 28, 58, 52
+            ],
+            "height": [
+                165, 182, 169, 190, 175
+            ]
+        }        
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string responseString = await response.Content.ReadAsStringAsync();
+        Dictionary<string, List<double>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(responseString);
+
+        Assert.Equal(3, responseObject.Values.ElementAt(0).Count);
     }
 }

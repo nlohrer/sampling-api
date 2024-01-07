@@ -1,5 +1,14 @@
 @SamplingAPI_HostAddress = http://localhost:5120
 
-GET {{SamplingAPI_HostAddress}}/api/estimator
+POST {{SamplingAPI_HostAddress}}/api/sample/srs?n=3&withReplacement=false
+Content-Type: application/json
 
+{
+    "age": [
+        18, 24, 38, 48, 52
+    ],
+    "height": [
+        165, 182, 169, 190, 175
+    ]
+}
 ###

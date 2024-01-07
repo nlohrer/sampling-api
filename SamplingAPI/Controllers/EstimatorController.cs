@@ -4,16 +4,45 @@ using SamplingAPI.Services;
 
 namespace SamplingAPI.Controllers;
 
+/// <summary>
+/// Estimate the mean of a sample.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class EstimatorController : ControllerBase
 {
     private IEstimationService EstimationService;
+
+    /// <summary>
+    /// Estimate the mean of a sample.
+    /// </summary>
+    /// <param name="estimationService"></param>
     public EstimatorController(IEstimationService estimationService)
     {
         EstimationService = estimationService;
     }
 
+    /// <summary>
+    /// Estimate the mean for a population based on a simple random sample.
+    /// </summary>
+    /// <param name="srs">The sample data.</param>
+    /// <returns>The estimator for the mean of a population.</returns>
+    /// <remarks>
+    /// Sample request:
+    ///     
+    ///     POST /api/estimator/srs
+    ///     {
+    ///         "targetColumn": "age",
+    ///         "withReplacement": false,
+    ///         "populationSize": 25,
+    ///         "data": {
+    ///             "age": [
+    ///                 23, 83, 53, 34
+    ///             ]
+    ///         },
+    ///         "significanceLevel": 5
+    ///     }
+    /// </remarks>
     [HttpPost("srs")]
     public async Task<ActionResult<Estimator>> EstimateSRS(SimpleRandomSample srs)
     {
@@ -30,6 +59,7 @@ public class EstimatorController : ControllerBase
     /// <remarks>
     /// Sample request:
     ///
+    ///     POST /api/estimator/model?modelType=diff
     ///     {
     ///         "targetColumn": "age",
     ///         "auxiliaryColumn": "height",
@@ -66,6 +96,7 @@ public class EstimatorController : ControllerBase
     /// <remarks>
     /// Sample request:
     ///
+    ///     POST /api/estimator/design
     ///     {
     ///         "targetColumn": "age",
     ///         "inclusionProbabilityColumn": "inclusionProbs",

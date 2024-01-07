@@ -27,7 +27,16 @@ public interface IEstimationService
     Estimator EstimateDesign(DesignSample sample);
 }
 
+/// <summary>
+/// Represents a type of model used for an estimate.
+/// </summary>
 public enum ModelType {
+    /// <summary>
+    /// For difference-based estimation.
+    /// </summary>
     diff,
+    /// <summary>
+    /// For ratio-based estimation.
+    /// </summary>
     ratio
 }

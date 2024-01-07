@@ -108,4 +108,34 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         string expected = "{\"mean\":18.1,\"variance\":28.810000000000016,\"confidenceInterval\":{\"lowerBound\":7.5797102701494,\"upperBound\":28.620289729850604,\"significanceLevel\":5}}";
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public async Task StratifiedEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "targetColumn": "age",
+            "strata": [
+                "m", "m", "m", "f", "f", "f"
+            ],
+            "stratumSizes": {
+                "m": 25,
+                "f": 75
+            },
+            "data": {
+                "age": [
+                    9, 10, 11, 18, 22, 25
+                ]
+            },
+            "significanceLevel": 5
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{Url}/stratified", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string actual = await response.Content.ReadAsStringAsync();
+        string expected = "{\"mean\":18.75,\"variance\":2.2383333333333337,\"confidenceInterval\":{\"lowerBound\":15.817632128580499,\"upperBound\":21.6823678714195,\"significanceLevel\":5}}";
+        Assert.Equal(expected, actual);
+    }
 }

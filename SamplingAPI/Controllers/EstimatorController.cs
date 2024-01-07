@@ -82,13 +82,50 @@ public class EstimatorController : ControllerBase
     ///     }
     /// </remarks>
     /// <response code="200">If the estimation could be performed successfully</response>
-    /// <response code="400">If either the the sample model was not valid.</response>
+    /// <response code="400">If the sample model was not valid.</response>
     [HttpPost("design")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<Estimator>> EstimateDesignBased(DesignSample sample)
     {
         Estimator result = EstimationService.EstimateDesign(sample);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Estimate a population mean based on a stratified sample.
+    /// </summary>
+    /// <param name="sample">The sample data.</param>
+    /// <returns>An estimator for the mean of a population.</returns>
+    /// <remarks>
+    /// Sample request:
+    ///     
+    ///     POST /api/estimator/stratified
+    ///     {
+    ///         "targetColumn": "age",
+    ///         "strata": [
+    ///             "m", "m", "m", "f", "f", "f"
+    ///         ],
+    ///         "stratumSizes": {
+    ///             "m": 25,
+    ///             "f": 75
+    ///         },
+    ///         "data": {
+    ///             "age": [
+    ///                 9, 10, 11, 18, 22, 25
+    ///             ]
+    ///         },
+    ///         "significanceLevel": 5
+    ///     }
+    /// </remarks>
+    /// <response code="200">If the estimation could be performed successfully</response>
+    /// <response code="400">If the sample model was not valid.</response>
+    [HttpPost("stratified")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Estimator>> EstimateStratified(StratifiedSample sample)
+    {
+        Estimator result = EstimationService.EstimateStratified(sample);
         return Ok(result);
     }
 }

@@ -25,6 +25,13 @@ public interface IEstimationService
     /// <param name="sample">A DesignSample object representing the sample data and additional iniformation required for estimation.</param>
     /// <returns>An estimator for the mean of the entire population.</returns>
     Estimator EstimateDesign(DesignSample sample);
+
+    /// <summary>
+    /// Estimate the mean of a stratified sample.
+    /// </summary>
+    /// <param name="sample">A StratifiedSample object representing the sample data and additional iniformation required for estimation.</param>
+    /// <returns>An estimator for the mean of the entire population.</returns>
+    Estimator EstimateStratified(StratifiedSample sample);
 }
 
 public enum ModelType {

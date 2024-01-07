@@ -73,4 +73,19 @@ public class EstimationService : IEstimationService
         ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, sample.SignificanceLevel);
         return new Estimator(mean, variance, ci);
     }
+
+    /// <summary>
+    /// Estimate the mean of a stratified sample.
+    /// </summary>
+    /// <param name="sample">A StratifiedSample object representing the sample data and additional iniformation required for estimation.</param>
+    /// <returns>An estimator for the mean of the entire population.</returns>
+    public Estimator EstimateStratified(StratifiedSample sample)
+    {
+        double[] data = sample.Data[sample.TargetColumn];
+
+        double mean = MeanFunctions.StratifiedMean(data, sample.Strata, sample.StratumSizes);
+        double variance = VarianceFunctions.StratifiedVariance(data, sample.Strata, sample.StratumSizes);
+        ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, sample.SignificanceLevel);
+        return new Estimator(mean, variance, ci);
+    }
 }

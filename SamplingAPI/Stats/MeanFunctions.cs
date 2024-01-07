@@ -82,7 +82,7 @@ public class MeanFunctions
     }
 
     /// <summary>
-    /// Estimates the mean of a population based on a cluster sampling strategy.
+    /// Estimates the mean of a population based on a cluster sampling strategy when the clusters are roughly equal in size.
     /// </summary>
     /// <param name="data">The sample data.</param>
     /// <param name="clusterCount">The amount of clusters in the sample.</param>
@@ -96,5 +96,16 @@ public class MeanFunctions
         double N = populationSize;
 
         return (M / N) * data.Sum() / m;
+    }
+
+    /// <summary>
+    /// Estimates the mean of a population based on a cluster sampling strategy when the clusters differ in size.
+    /// </summary>
+    /// <param name="data">The sample data.</param>
+    /// <param name="clusterSizes">The size of each cluster.</param>
+    /// <returns>The estimated mean.</returns>
+    public static double HeterogeneousClusterMean(double[] data, int[] clusterSizes)
+    {
+        return data.Sum() / clusterSizes.Sum();
     }
 }

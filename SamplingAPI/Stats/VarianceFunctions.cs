@@ -151,7 +151,7 @@ public class VarianceFunctions
     /// <param name="clusterCount">The amount of clusters in the sample.</param>
     /// <param name="totalClusterCount">The total amount of clusters in the population.</param>
     /// <param name="populationSize">The total size of the population.</param>
-    /// <returns>The estimated mean.</returns>
+    /// <returns>The estimated variance of the estimated mean.</returns>
     public static double ClusterVariance(double[] data, int clusterCount, int totalClusterCount, int populationSize)
     {
         double M = totalClusterCount;
@@ -160,6 +160,35 @@ public class VarianceFunctions
         double clusterTotalMean = data.Average();
 
         double sumOfSquares = data.Select(clusterTotal => Math.Pow(clusterTotal - clusterTotalMean, 2)).Sum();
+
+        return
+            Math.Pow(M / N, 2) *
+            ((M - m) / M) *
+            (1.0 / (m * (m - 1))) *
+            sumOfSquares;
+    }
+
+    /// <summary>
+    /// Estimates the variance of a mean that was estimated from a cluster sample.
+    /// </summary>
+    /// <param name="data">The data used for mean estimation.</param>
+    /// <param name="clusterSizes">The size of each cluster.</param>
+    /// <param name="mean">The estimated mean.</param>
+    /// <param name="clusterCount">The amount of clusters in the sample.</param>
+    /// <param name="totalClusterCount">The total amount of clusters in the population.</param>
+    /// <param name="populationSize">The total size of the population.</param>
+    /// <returns>The estimated variance of the estimated mean.</returns>
+    public static double HeterogeneousClusterVariance(double[] data, int[] clusterSizes, double mean, int clusterCount, int totalClusterCount, int populationSize)
+    {
+        double M = totalClusterCount;
+        double m = clusterCount;
+        double N = populationSize;
+        double clusterTotalMean = data.Average();
+
+        IEnumerable<(double clusterTotal, int clusterSize)> zippedData = data.Zip(clusterSizes);
+        double sumOfSquares = zippedData
+            .Select(tuple => Math.Pow(tuple.clusterTotal - tuple.clusterSize * mean, 2))
+            .Sum();
 
         return
             Math.Pow(M / N, 2) *

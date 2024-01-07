@@ -256,4 +256,33 @@ public class EstimationTests
 
         Assert.Equal(expected, actual);
     }
+
+    [Fact]
+    public void EstimateHeterogeneousClusterMeans()
+    {
+        double[] data = [135, 180, 160, 225];
+        int[] clusterSizes = [50, 60, 40, 50];
+
+        double actual = MeanFunctions.HeterogeneousClusterMean(data, clusterSizes);
+        double expected = 3.5;
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void EstimateHeterogeneousClusterVariance()
+    {
+        double[] data = [135, 180, 160, 225];
+        int[] clusterSizes = [50, 60, 40, 50];
+        double mean = MeanFunctions.HeterogeneousClusterMean(data, clusterSizes);
+        int totalClusterCount = 40;
+        int clusterCount = 4;
+        int populationSize = 2000;
+
+
+        double actual = VarianceFunctions.HeterogeneousClusterVariance(data, clusterSizes, mean, clusterCount, totalClusterCount, populationSize);
+        double expected = 0.162;
+
+        Assert.Equal(expected, actual);
+    }
 }

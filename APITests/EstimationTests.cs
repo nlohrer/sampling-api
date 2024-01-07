@@ -182,4 +182,50 @@ public class EstimationTests
         double expected = Math.Round(exp, 2);
         Assert.Equal(expected, actual);
     }
+
+    [Theory]
+    [InlineData(17.38, 1, 2, 4, 5)]
+    [InlineData(17.5, 1, 3, 4, 5)]
+    [InlineData(17.62, 2, 3, 4, 5)]
+    [InlineData(18.5, 1, 2, 4, 6)]
+    [InlineData(18.62, 1, 3, 4, 6)]
+    [InlineData(18.75, 2, 3, 4, 6)]
+    [InlineData(20, 1, 2, 5, 6)]
+    [InlineData(20.12, 1, 3, 5, 6)]
+    [InlineData(20.25, 2, 3, 5, 6)]
+    public void EstimateStratifiedMeans(double exp, params int[] drawn)
+    {
+        IEnumerable<double> data = [9, 10, 11, 18, 22, 25];
+        IEnumerable<string> strata = ["m", "m", "m", "f", "f", "f"];
+        double[] dataDrawn = data.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        string[] drawnStrata = strata.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        Dictionary<string, int> stratumSizes = new() {{"m", 25}, {"f", 75}};
+
+        double actual = Math.Round(MeanFunctions.StratifiedMean(dataDrawn, drawnStrata, stratumSizes), 2);
+        double expected = Math.Round(exp, 2);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(2.20, 1, 2, 4, 5)]
+    [InlineData(2.25, 1, 3, 4, 5)]
+    [InlineData(2.20, 2, 3, 4, 5)]
+    [InlineData(6.72, 1, 2, 4, 6)]
+    [InlineData(6.76, 1, 3, 4, 6)]
+    [InlineData(6.72, 2, 3, 4, 6)]
+    [InlineData(1.25, 1, 2, 5, 6)]
+    [InlineData(1.29, 1, 3, 5, 6)]
+    [InlineData(1.25, 2, 3, 5, 6)]
+    public void EstimateStratifiedVariance(double exp, params int[] drawn)
+    {
+        IEnumerable<double> data = [9, 10, 11, 18, 22, 25];
+        IEnumerable<string> strata = ["m", "m", "m", "f", "f", "f"];
+        double[] dataDrawn = data.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        string[] drawnStrata = strata.Where((_, i) => drawn.Contains(i + 1)).ToArray();
+        Dictionary<string, int> stratumSizes = new() {{"m", 25}, {"f", 75}};
+
+        double actual = Math.Round(VarianceFunctions.StratifiedVariance(dataDrawn, drawnStrata, stratumSizes), 2);
+        double expected = Math.Round(exp, 2);
+        Assert.Equal(expected, actual);
+    }
 }

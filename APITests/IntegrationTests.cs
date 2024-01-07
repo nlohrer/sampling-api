@@ -133,4 +133,34 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
         Assert.Equal(3, responseObject.Values.ElementAt(0).Count);
     }
+
+    [Fact]
+    public async Task StratifiedEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "targetColumn": "age",
+            "strata": [
+                "m", "m", "m", "f", "f", "f"
+            ],
+            "stratumSizes": {
+                "m": 25,
+                "f": 75
+            },
+            "data": {
+                "age": [
+                    9, 10, 11, 18, 22, 25
+                ]
+            },
+            "significanceLevel": 5
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{EstimatorUrl}/stratified", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string actual = await response.Content.ReadAsStringAsync();
+        string expected = "{\"mean\":18.75,\"variance\":2.2383333333333337,\"confidenceInterval\":{\"lowerBound\":15.817632128580499,\"upperBound\":21.6823678714195,\"significanceLevel\":5}}";
+        Assert.Equal(expected, actual);
+    }
 }

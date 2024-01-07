@@ -111,4 +111,36 @@ public class VarianceFunctions
             (1.0 / (n * (n - 1))) *
             sumOfSquares;
     }
+
+    /// <summary>
+    /// Estimates the variance of a mean that was estimated from a stratified sample.
+    /// </summary>
+    /// <param name="data">The data used for the mean estimation.</param>
+    /// <param name="strata">The stratum that each entry of the sample data belongs to respectively.</param>
+    /// <param name="stratumSizes">The total population size for each stratum.</param>
+    /// <returns>The estimated variance of the estimated mean.</returns>
+    public static double StratifiedVariance(double[] data, string[] strata, Dictionary<string, int> stratumSizes)
+    {
+        IEnumerable<(double y, string stratum)> zippedData = data.Zip(strata);
+        double N = stratumSizes.Values.Sum();
+
+        double sum = 0;
+        foreach (string stratum in stratumSizes.Keys)
+        {
+            double N_h = stratumSizes[stratum];
+            IEnumerable<(double y, string stratum)> stratumData = zippedData.Where(tuple => tuple.stratum == stratum);
+            double n_h = stratumData.Count();
+
+            double factor = Math.Pow(N_h / N, 2) * ((N_h - n_h) / N_h) * (1.0 / n_h);
+            double stratumMean = stratumData.Select(tuple => tuple.y).Average();
+            double variance = stratumData.Select(tuple =>
+            {
+                double difference = Math.Pow(tuple.y - stratumMean, 2);
+                return difference / (n_h - 1);
+            }).Sum();
+
+            sum += factor * variance;
+        }
+        return sum;
+    }
 }

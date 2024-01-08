@@ -12,17 +12,16 @@ public class EstimationService : IEstimationService
     /// <returns>An estimator for the mean of the total population.</returns>
     public Estimator EstimateSRS(SimpleRandomSample srs)
     {
-        double[] data = srs.Data[srs.TargetColumn];
-        double mean = MeanFunctions.SRSMean(data);
+        double mean = MeanFunctions.SRSMean(srs.Data);
 
         double variance;
         if (srs.WithReplacement || srs.PopulationSize is null)
         {
-            variance = VarianceFunctions.SRSVariance(data, mean, true);
+            variance = VarianceFunctions.SRSVariance(srs.Data, mean, true);
         }
         else
         {
-            variance = VarianceFunctions.SRSVariance(data, mean, false, (int) srs.PopulationSize);
+            variance = VarianceFunctions.SRSVariance(srs.Data, mean, false, (int) srs.PopulationSize);
         }
 
         ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, srs.SignificanceLevel);
@@ -37,18 +36,15 @@ public class EstimationService : IEstimationService
     /// <returns>An estimator for the mean of the total population.</returns>
     public Estimator EstimateModel(ModelSample sample, ModelType modelType)
     {
-        double[] primaryData = sample.Data[sample.TargetColumn];
-        double[] secondaryData = sample.Data[sample.AuxiliaryColumn];
-
         double mean, variance;
         if (modelType == ModelType.diff)
         {
-            mean = MeanFunctions.DiffMean(primaryData, secondaryData, sample.AuxiliaryMean);
-            variance = VarianceFunctions.DiffVariance(primaryData, secondaryData, sample.PopulationSize);
+            mean = MeanFunctions.DiffMean(sample.Data, sample.AuxiliaryData, sample.AuxiliaryMean);
+            variance = VarianceFunctions.DiffVariance(sample.Data, sample.AuxiliaryData, sample.PopulationSize);
         } else if (modelType == ModelType.ratio)
         {
-            mean = MeanFunctions.RatioMean(primaryData, secondaryData, sample.AuxiliaryMean);
-            variance = VarianceFunctions.RatioVariance(primaryData, secondaryData, sample.PopulationSize);
+            mean = MeanFunctions.RatioMean(sample.Data, sample.AuxiliaryData, sample.AuxiliaryMean);
+            variance = VarianceFunctions.RatioVariance(sample.Data, sample.AuxiliaryData, sample.PopulationSize);
         } else
         {
             throw new ArgumentException("Please provide a correct model for estimation.");
@@ -65,11 +61,8 @@ public class EstimationService : IEstimationService
     /// <returns>An estimator for the mean of the entire population.</returns>
     public Estimator EstimateDesign(DesignSample sample)
     {
-        double[] data = sample.Data[sample.TargetColumn];
-        double[] inclusionProbabilities = sample.Data[sample.InclusionProbabilityColumn];
-
-        double mean = MeanFunctions.HTMean(data, inclusionProbabilities, sample.PopulationSize);
-        double variance = VarianceFunctions.HHVariance(data, inclusionProbabilities, mean, sample.PopulationSize);
+        double mean = MeanFunctions.HTMean(sample.Data, sample.InclusionProbabilities, sample.PopulationSize);
+        double variance = VarianceFunctions.HHVariance(sample.Data, sample.InclusionProbabilities, mean, sample.PopulationSize);
         ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, sample.SignificanceLevel);
         return new Estimator(mean, variance, ci);
     }
@@ -81,10 +74,8 @@ public class EstimationService : IEstimationService
     /// <returns>An estimator for the mean of the entire population.</returns>
     public Estimator EstimateStratified(StratifiedSample sample)
     {
-        double[] data = sample.Data[sample.TargetColumn];
-
-        double mean = MeanFunctions.StratifiedMean(data, sample.Strata, sample.StratumSizes);
-        double variance = VarianceFunctions.StratifiedVariance(data, sample.Strata, sample.StratumSizes);
+        double mean = MeanFunctions.StratifiedMean(sample.Data, sample.Strata, sample.StratumSizes);
+        double variance = VarianceFunctions.StratifiedVariance(sample.Data, sample.Strata, sample.StratumSizes);
         ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, sample.SignificanceLevel);
         return new Estimator(mean, variance, ci);
     }
@@ -97,21 +88,20 @@ public class EstimationService : IEstimationService
     /// <returns>An estimator for the mean of the entire population.</returns>
     public Estimator EstimateCluster(ClusterSample sample, bool equalSizes)
     {
-        double[] data = sample.Data[sample.TargetColumn];
         double mean, variance;
 
         if (equalSizes)
         {
-            mean = MeanFunctions.ClusterMean(data, sample.ClusterCount, sample.TotalClusterCount, sample.PopulationSize);
-            variance = VarianceFunctions.ClusterVariance(data, sample.ClusterCount, sample.TotalClusterCount, sample.PopulationSize);
+            mean = MeanFunctions.ClusterMean(sample.Data, sample.ClusterCount, sample.TotalClusterCount, sample.PopulationSize);
+            variance = VarianceFunctions.ClusterVariance(sample.Data, sample.ClusterCount, sample.TotalClusterCount, sample.PopulationSize);
         } else
         {
             if (sample.ClusterSizes is null)
             {
                 throw new ArgumentNullException(nameof(sample.ClusterSizes));
             }
-            mean = MeanFunctions.HeterogeneousClusterMean(data, sample.ClusterSizes);
-            variance = VarianceFunctions.HeterogeneousClusterVariance(data, sample.ClusterSizes, mean, sample.ClusterCount, sample.TotalClusterCount, sample.PopulationSize);
+            mean = MeanFunctions.HeterogeneousClusterMean(sample.Data, sample.ClusterSizes);
+            variance = VarianceFunctions.HeterogeneousClusterVariance(sample.Data, sample.ClusterSizes, mean, sample.ClusterCount, sample.TotalClusterCount, sample.PopulationSize);
         }
 
         ConfidenceInterval ci = GeneralFunctions.CalculateConfidenceInterval(mean, variance, sample.SignificanceLevel);

@@ -22,14 +22,11 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         string body = $$"""
             {
-                "targetColumn": "age",
+                "data": [
+                    9, 10, 11, 18, 22
+                ],
                 "withReplacement": true,
                 "populationSize": 50,
-                "data": {
-                    "age": [
-                        9, 10, 11, 18, 22
-                    ]
-                },
                 "significanceLevel": 5
             }
             """;
@@ -47,18 +44,14 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         string body = $$"""
         {
-            "targetColumn": "age",
-            "auxiliaryColumn": "height",
+            "data": [
+                9, 10, 11
+            ],
+            "auxiliaryData": [
+                11, 11, 11
+            ],
             "auxiliaryMean": 15,
             "populationSize": 5,
-            "data": {
-              "age": [
-                9, 10, 11
-              ],
-              "height": [
-                11, 11, 11
-              ]
-            },
             "significanceLevel": 5
         }
         """;
@@ -90,17 +83,13 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         string body = $$$"""
         {
-            "targetColumn": "age",
-            "inclusionProbabilityColumn": "inclusionProbs",
-            "populationSize": 20,
-            "data": {
-                "age": [
+            "data": [
                     4, 9, 24
                 ],
-                "inclusionProbs": [
+            "inclusionProbabilities": [
                     0.05, 0.1, 0.125
-                ]
-            },
+                ],
+            "populationSize": 20,
             "significanceLevel": 5
         }
         """;
@@ -176,18 +165,15 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     {
         string body = $$$"""
         {
-            "targetColumn": "age",
+            "data": [
+                9, 10, 11, 18, 22, 25
+            ],
             "strata": [
                 "m", "m", "m", "f", "f", "f"
             ],
             "stratumSizes": {
                 "m": 25,
                 "f": 75
-            },
-            "data": {
-                "age": [
-                    9, 10, 11, 18, 22, 25
-                ]
             },
             "significanceLevel": 5
         }

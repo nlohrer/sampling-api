@@ -33,14 +33,11 @@ public class EstimatorController : ControllerBase
     ///     POST /api/estimator/srs
     ///     
     ///     {
-    ///         "targetColumn": "age",
+    ///         "data": [
+    ///             23, 83, 53, 34
+    ///         ],
     ///         "withReplacement": false,
     ///         "populationSize": 25,
-    ///         "data": {
-    ///             "age": [
-    ///                 23, 83, 53, 34
-    ///             ]
-    ///         },
     ///         "significanceLevel": 5
     ///     }
     /// </remarks>
@@ -63,18 +60,14 @@ public class EstimatorController : ControllerBase
     ///     POST /api/estimator/model?modelType=diff
     ///     
     ///     {
-    ///         "targetColumn": "age",
-    ///         "auxiliaryColumn": "height",
+    ///         "data":  [
+    ///             9, 10, 11
+    ///         ],
+    ///         "auxiliaryData": [
+    ///             11, 11, 11
+    ///         ],
     ///         "auxiliaryMean": 15,
     ///         "populationSize": 5,
-    ///         "data": {
-    ///             "age": [
-    ///                 9, 10, 11
-    ///             ],
-    ///             "height": [
-    ///                 11, 11, 11
-    ///             ]
-    ///         },
     ///         "significanceLevel": 5
     ///     }
     /// </remarks>
@@ -101,17 +94,13 @@ public class EstimatorController : ControllerBase
     ///     POST /api/estimator/design
     ///     
     ///     {
-    ///         "targetColumn": "age",
-    ///         "inclusionProbabilityColumn": "inclusionProbs",
+    ///         "data": [
+    ///             4, 9, 24
+    ///         ],
+    ///         "inclusionProbabilities": [
+    ///             0.05, 0.1, 0.125
+    ///         ],
     ///         "populationSize": 20,
-    ///         "data": {
-    ///             "age": [
-    ///                 4, 9, 24
-    ///             ],
-    ///             "inclusionProbs": [
-    ///                 0.05, 0.1, 0.125
-    ///             ]
-    ///         },
     ///         "significanceLevel": 5
     ///     }
     /// </remarks>
@@ -137,18 +126,15 @@ public class EstimatorController : ControllerBase
     ///     POST /api/estimator/stratified
     ///     
     ///     {
-    ///         "targetColumn": "age",
+    ///         "Data": [
+    ///             9, 10, 11, 18, 22, 25
+    ///         ],
     ///         "strata": [
     ///             "m", "m", "m", "f", "f", "f"
     ///         ],
     ///         "stratumSizes": {
     ///             "m": 25,
     ///             "f": 75
-    ///         },
-    ///         "data": {
-    ///             "age": [
-    ///                 9, 10, 11, 18, 22, 25
-    ///             ]
     ///         },
     ///         "significanceLevel": 5
     ///     }
@@ -176,18 +162,15 @@ public class EstimatorController : ControllerBase
     ///     POST /api/estimator/stratified?equalSizes=false
     ///     
     ///     {
-    ///         "targetColumn": "householdSize",
+    ///         "Data": [
+    ///             140, 200, 80
+    ///         ],
     ///         "clusterSizes": [
     ///             40, 60, 20
     ///         ],
     ///         "populationSize": 2000,
     ///         "clusterCount": 3,
     ///         "totalClusterCount": 100,
-    ///         "data": {
-    ///             "householdSize": [
-    ///                 140, 200, 80
-    ///             ]
-    ///         },
     ///         "significanceLevel": 5
     ///     }
     /// </remarks>

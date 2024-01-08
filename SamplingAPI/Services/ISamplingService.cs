@@ -1,4 +1,6 @@
-﻿namespace SamplingAPI.Services;
+﻿using System.Text.Json;
+
+namespace SamplingAPI.Services;
 
 public interface ISamplingService
 {
@@ -8,6 +10,7 @@ public interface ISamplingService
     /// <param name="data">The original data.</param>
     /// <param name="n">The size of the sample.</param>
     /// <param name="withReplacement">Whether the sample should be drawn with replacement.</param>
+    /// <param name="removeMissing">Whether rows with null values should not be sampled.</param>
     /// <returns>A sample drawn from the original <paramref name="data"/>.</returns>
-    Dictionary<string, List<double>> TakeSimpleRandomSample(Dictionary<string, double[]> data, int n, bool withReplacement);
+    Dictionary<string, List<JsonElement>> TakeSimpleRandomSample(Dictionary<string, JsonElement[]> data, int n, bool withReplacement, bool removeMissing);
 }

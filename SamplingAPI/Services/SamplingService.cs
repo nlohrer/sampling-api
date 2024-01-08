@@ -1,4 +1,7 @@
 ﻿
+using System.ComponentModel;
+using System.Text.Json;
+
 namespace SamplingAPI.Services;
 
 public class SamplingService : ISamplingService
@@ -11,22 +14,29 @@ public class SamplingService : ISamplingService
     /// <param name="data">The original data.</param>
     /// <param name="n">The size of the sample.</param>
     /// <param name="withReplacement">Whether the sample should be drawn with replacement.</param>
+    /// <param name="removeMissing">Whether rows with null values should not be sampled.</param>
     /// <returns>A sample drawn from the original <paramref name="data"/>.</returns>
-    public Dictionary<string, List<double>> TakeSimpleRandomSample(Dictionary<string, double[]> data, int n, bool withReplacement)
+    public Dictionary<string, List<JsonElement>> TakeSimpleRandomSample(Dictionary<string, JsonElement[]> data, int n, bool withReplacement, bool removeMissing)
     {
+
         int length = data.Values.ElementAt(0).Length;
-        if (withReplacement && n > length)
+        if (removeMissing)
+        {
+            length -= RemoveRowsWithMissingValues(data);
+        }
+
+        if (!withReplacement && n > length)
         {
             n = length;
         }
 
-        Dictionary<string, List<double>> sample = new();
+        Dictionary<string, List<JsonElement>> sample = new();
         foreach (string key in data.Keys)
         {
             sample[key] = [];
         }
         IEnumerable<int> randomNumbers;
-        if (withReplacement)
+        if (!withReplacement)
         {
             randomNumbers = Enumerable
                 .Range(0, length)
@@ -45,10 +55,36 @@ public class SamplingService : ISamplingService
         {
             foreach(string key in data.Keys)
             {
-                sample[key].Add(data[key][rand]);
+                sample[key].Add(data[key].ElementAt(rand));
             }
         }
 
         return sample;
+    }
+
+    /// <summary>
+    /// Removes all rows from the data that contain missing values and returns the number of rows removed.
+    /// </summary>
+    /// <returns>The number of removed rows.</returns>
+    private static int RemoveRowsWithMissingValues(Dictionary<string, JsonElement[]> data)
+    {
+        HashSet<int> missingIndices = [];
+        foreach (JsonElement[] column in data.Values)
+        {
+            for (int i = 0; i < column.Length; i++)
+            {
+                if (column[i].ValueKind == JsonValueKind.Null)
+                {
+                    missingIndices.Add(i);
+                }
+            }
+        }
+
+        foreach (string key in data.Keys)
+        {
+            data[key] = data[key].Where((_, i) => !missingIndices.Contains(i)).ToArray();
+        }
+
+        return missingIndices.Count;
     }
 }

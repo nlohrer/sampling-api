@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SamplingAPI.Models;
 using SamplingAPI.Services;
+using System.Text.Json;
 
 namespace SamplingAPI.Controllers;
 
@@ -26,11 +28,13 @@ public class SampleController : ControllerBase
     /// <param name="data">The data the sample should be taken from.</param>
     /// <param name="n">The size of the sample.</param>
     /// <param name="withReplacement">Whether the sample should be drawn with replacement.</param>
+    /// <param name="removeMissing">Whether rows with missing data (that is, rows containing null values) should be removed.</param>
     /// <returns>The drawn sample.</returns>
     /// <remarks>
     /// Sample request:
     /// 
-    ///     POST /api/sample/srs?n=3&amp;withReplacement=false
+    ///     POST /api/sample/srs?n=3&amp;withReplacement=false&amp;removeMissing=false
+    ///
     ///     {
     ///         "age": [
     ///             18, 24, 38, 48, 52
@@ -40,10 +44,14 @@ public class SampleController : ControllerBase
     ///         ]
     ///     }
     /// </remarks>
+    /// <response code="200">If the data could be sampled successfully.</response>
+    /// <response code="400">If the provided data could not be validated.</response>
     [HttpPost("srs")]
-    public async Task<ActionResult<Dictionary<string, List<double>>>> SampleSRS([FromBody] Dictionary<string, double[]> data, [FromQuery] int n, [FromQuery] bool withReplacement = true)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SampleSRS([FromBody] Data data, [FromQuery] int n, [FromQuery] bool withReplacement = true, [FromQuery] bool removeMissing = false)
     {
-        Dictionary<string, List<double>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement);
+        Dictionary<string, List<JsonElement>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement, removeMissing);
 
         return Ok(sample);
     }

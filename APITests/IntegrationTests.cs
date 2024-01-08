@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace APITests;
 
@@ -125,13 +127,48 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         }        
         """;
         HttpContent content = Helpers.GetJSONContent(body);
-        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=6", content);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
         Dictionary<string, List<double>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(responseString);
 
-        Assert.Equal(3, responseObject.Values.ElementAt(0).Count);
+        Assert.Equal(6, responseObject.Values.ElementAt(0).Count);
+    }
+
+    [Fact]
+    public async Task SampleArbitraryData()
+    {
+        string body = $$$"""
+        {
+            "age": [20, 34],
+            "name": ["Alex", "Angelina"],
+            "married": [true, false],
+            "lucky numbers": [[1,2],[4]],
+            "pet": [{"name": "Fluffy"}, {"name": "Minou", "kind": "cat", "age": 4}]
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string responseString = await response.Content.ReadAsStringAsync();
+        Dictionary<string, List<Object>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<Object>>>(responseString);
+        Assert.Equal(5, responseObject.Count);
+    }
+
+    [Fact]
+    public async Task SamplingRequiresColumnsToBeEquallyLong()
+    {
+        string body = $$$"""
+        {
+            "age": [20, 23],
+            "name": ["Angelina"]
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

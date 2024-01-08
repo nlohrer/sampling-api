@@ -1,4 +1,6 @@
 ﻿
+using System.Text.Json;
+
 namespace SamplingAPI.Services;
 
 public class SamplingService : ISamplingService
@@ -12,7 +14,7 @@ public class SamplingService : ISamplingService
     /// <param name="n">The size of the sample.</param>
     /// <param name="withReplacement">Whether the sample should be drawn with replacement.</param>
     /// <returns>A sample drawn from the original <paramref name="data"/>.</returns>
-    public Dictionary<string, List<double>> TakeSimpleRandomSample(Dictionary<string, double[]> data, int n, bool withReplacement)
+    public Dictionary<string, List<JsonElement>> TakeSimpleRandomSample(Dictionary<string, JsonElement[]> data, int n, bool withReplacement)
     {
         int length = data.Values.ElementAt(0).Length;
         if (withReplacement && n > length)
@@ -20,7 +22,7 @@ public class SamplingService : ISamplingService
             n = length;
         }
 
-        Dictionary<string, List<double>> sample = new();
+        Dictionary<string, List<JsonElement>> sample = new();
         foreach (string key in data.Keys)
         {
             sample[key] = [];
@@ -45,7 +47,7 @@ public class SamplingService : ISamplingService
         {
             foreach(string key in data.Keys)
             {
-                sample[key].Add(data[key][rand]);
+                sample[key].Add(data[key].ElementAt(rand));
             }
         }
 

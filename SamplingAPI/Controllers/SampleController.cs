@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SamplingAPI.Services;
+using System.Text.Json;
 
 namespace SamplingAPI.Controllers;
 
@@ -31,6 +32,7 @@ public class SampleController : ControllerBase
     /// Sample request:
     /// 
     ///     POST /api/sample/srs?n=3&amp;withReplacement=false
+    ///
     ///     {
     ///         "age": [
     ///             18, 24, 38, 48, 52
@@ -41,9 +43,9 @@ public class SampleController : ControllerBase
     ///     }
     /// </remarks>
     [HttpPost("srs")]
-    public async Task<ActionResult<Dictionary<string, List<double>>>> SampleSRS([FromBody] Dictionary<string, double[]> data, [FromQuery] int n, [FromQuery] bool withReplacement = true)
+    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SampleSRS([FromBody] Dictionary<string, JsonElement[]> data, [FromQuery] int n, [FromQuery] bool withReplacement = true)
     {
-        Dictionary<string, List<double>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement);
+        Dictionary<string, List<JsonElement>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement);
 
         return Ok(sample);
     }

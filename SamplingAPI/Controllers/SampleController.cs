@@ -27,11 +27,12 @@ public class SampleController : ControllerBase
     /// <param name="data">The data the sample should be taken from.</param>
     /// <param name="n">The size of the sample.</param>
     /// <param name="withReplacement">Whether the sample should be drawn with replacement.</param>
+    /// <param name="removeMissing">Whether rows with missing data (that is, rows containing null values) should be removed.</param>
     /// <returns>The drawn sample.</returns>
     /// <remarks>
     /// Sample request:
     /// 
-    ///     POST /api/sample/srs?n=3&amp;withReplacement=false
+    ///     POST /api/sample/srs?n=3&amp;withReplacement=false&amp;removeMissing=false
     ///
     ///     {
     ///         "age": [
@@ -43,9 +44,9 @@ public class SampleController : ControllerBase
     ///     }
     /// </remarks>
     [HttpPost("srs")]
-    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SampleSRS([FromBody] Dictionary<string, JsonElement[]> data, [FromQuery] int n, [FromQuery] bool withReplacement = true)
+    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SampleSRS([FromBody] Dictionary<string, JsonElement[]> data, [FromQuery] int n, [FromQuery] bool withReplacement = true, [FromQuery] bool removeMissing = false)
     {
-        Dictionary<string, List<JsonElement>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement);
+        Dictionary<string, List<JsonElement>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement, removeMissing);
 
         return Ok(sample);
     }

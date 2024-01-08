@@ -126,13 +126,13 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         }        
         """;
         HttpContent content = Helpers.GetJSONContent(body);
-        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=6", content);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
         Dictionary<string, List<double>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(responseString);
 
-        Assert.Equal(3, responseObject.Values.ElementAt(0).Count);
+        Assert.Equal(6, responseObject.Values.ElementAt(0).Count);
     }
 
     [Fact]

@@ -1,4 +1,4 @@
-﻿namespace SamplingAPI.Models;
+﻿namespace SamplingAPI.Models.SampleModels;
 
 /// <summary>
 /// Represents a simple random sample, including metadata for estimation.

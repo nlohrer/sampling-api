@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace SamplingAPI.Services;
+namespace SamplingAPI.Services.Interfaces;
 
 public interface ISamplingService
 {

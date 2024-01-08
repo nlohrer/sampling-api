@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SamplingAPI.Models;
-using SamplingAPI.Services;
+using SamplingAPI.Models.DaterTransferModels;
+using SamplingAPI.Services.Interfaces;
 
 namespace SamplingAPI.Controllers;
 

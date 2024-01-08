@@ -1,6 +1,7 @@
-﻿using SamplingAPI.Models;
+﻿using SamplingAPI.Models.DaterTransferModels;
+using SamplingAPI.Models.SampleModels;
 
-namespace SamplingAPI.Services;
+namespace SamplingAPI.Services.Interfaces;
 
 public interface IEstimationService
 {
@@ -45,7 +46,8 @@ public interface IEstimationService
 /// <summary>
 /// Represents a type of model used for an estimate.
 /// </summary>
-public enum ModelType {
+public enum ModelType
+{
     /// <summary>
     /// For difference-based estimation.
     /// </summary>

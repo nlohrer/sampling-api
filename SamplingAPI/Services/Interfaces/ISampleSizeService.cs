@@ -1,5 +1,5 @@
-﻿using SamplingAPI.Models;
-namespace SamplingAPI.Services;
+﻿using SamplingAPI.Models.DaterTransferModels;
+namespace SamplingAPI.Services.Interfaces;
 
 public interface ISampleSizeService
 {

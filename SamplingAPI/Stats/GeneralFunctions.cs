@@ -1,4 +1,4 @@
-﻿using SamplingAPI.Models;
+﻿using SamplingAPI.Models.DaterTransferModels;
 
 namespace SamplingAPI.Stats;
 

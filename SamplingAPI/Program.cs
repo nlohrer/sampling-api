@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using SamplingAPI.Services;
+using SamplingAPI.Services.Interfaces;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

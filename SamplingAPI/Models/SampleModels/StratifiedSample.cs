@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SamplingAPI.Models;
+namespace SamplingAPI.Models.SampleModels;
 
 /// <summary>
 /// Represents a stratified sample, including metadata for estimation.

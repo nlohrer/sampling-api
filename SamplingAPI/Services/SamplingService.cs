@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel;
 using System.Text.Json;
+using SamplingAPI.Services.Interfaces;
 
 namespace SamplingAPI.Services;
 

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace SamplingAPI.Models;
+namespace SamplingAPI.Models.DaterTransferModels;
 
 /// <summary>
 /// Represents generic tabular data.
@@ -10,9 +10,9 @@ public class Data : Dictionary<string, JsonElement[]>, IValidatableObject
 {
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (this.Count > 0)
+        if (Count > 0)
         {
-            var lengths = this.Values.Select(column => column.Length);
+            var lengths = Values.Select(column => column.Length);
             int firstLength = lengths.First();
 
             if (lengths.Any(length => length != firstLength))

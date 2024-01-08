@@ -1,5 +1,7 @@
 ﻿using SamplingAPI.Models;
+using SamplingAPI.Models.DaterTransferModels;
 using SamplingAPI.Services;
+using SamplingAPI.Services.Interfaces;
 using SamplingAPI.Stats;
 
 namespace APITests;

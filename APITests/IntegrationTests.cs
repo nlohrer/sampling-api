@@ -11,6 +11,7 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     private readonly HttpClient _client;
     internal static readonly string EstimatorUrl = "/api/Estimator";
     internal static readonly string SampleUrl = "/api/Sample";
+    internal static readonly string SizeUrl = "/api/SampleSize";
 
     public IntegrationTests(WebApplicationFactory<Program> factory)
     {
@@ -198,6 +199,40 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         """;
         HttpContent content = Helpers.GetJSONContent(body);
         var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task SampleSizeSRSEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "e": 0.015,
+            "alpha": 5,
+            "withReplacement": true,
+            "worstCasePercentage": 0.4
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SizeUrl}/srs", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string responseBody = await response.Content.ReadAsStringAsync();
+        Assert.Equal("4098", responseBody);
+    }
+
+    [Fact]
+    public async Task DeterminingSizeWithoutReplacementRequiresSpezifyingPopulationSize()
+    {
+        string body = $$$"""
+        {
+            "e": 0.02,
+            "alpha": 5,
+            "withReplacement": false
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SizeUrl}/srs", content);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 

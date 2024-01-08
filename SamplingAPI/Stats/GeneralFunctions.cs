@@ -32,7 +32,7 @@ public class GeneralFunctions
             case 1:
                 return 2.58;
             default:
-                throw new NotImplementedException();
+                throw new ArgumentException("Please choose a significance level of 1%, 5%, or 10%.");
         }
     }
 }

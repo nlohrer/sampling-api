@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing.Constraints;
+using SamplingAPI.Services;
 using SamplingAPI.Stats;
 
 namespace APITests;
@@ -284,5 +285,29 @@ public class EstimationTests
         double expected = 0.162;
 
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void CalculateSampleSizeSRSWithReplacement()
+    {
+        ISampleSizeService sampleSizeService = new SampleSizeService();
+        double ciWidth = 0.028;
+        int alpha = 5;
+        double worstCasePercentage = 0.7;
+
+        int actual = sampleSizeService.GetSizeSRS(ciWidth, alpha, true, worstCasePercentage: worstCasePercentage);
+        Assert.Equal(1029, actual);
+    }
+
+    [Fact]
+    public void CalculateSampleSizeSRSWithoutReplacement()
+    {
+        ISampleSizeService sampleSizeService = new SampleSizeService();
+        double ciWidth = 0.01;
+        int alpha = 5;
+        double worstCasePercentage = 0.5;
+
+        int actual = sampleSizeService.GetSizeSRS(ciWidth, alpha, false, 50000, worstCasePercentage);
+        Assert.Equal(8057, actual);
     }
 }

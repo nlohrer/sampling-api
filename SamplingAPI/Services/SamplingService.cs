@@ -63,6 +63,35 @@ public class SamplingService : ISamplingService
     }
 
     /// <summary>
+    /// Take a systematic sample from the given <paramref name="data"/>.
+    /// </summary>
+    /// <param name="data">The original data.</param>
+    /// <param name="interval">The interval for systematic sampling - given k = interval, every kth element will be drawn into the sample.</param>
+    /// <param name="firstIndex">The first index for sampling.</param>
+    /// <returns>A systematic sample drawn from the original <paramref name="data"/>.</returns>
+    public Dictionary<string, List<JsonElement>> TakeSystematicSample(Dictionary<string, JsonElement[]> data, int interval, int firstIndex = 0)
+    {
+        int length = data.Values.ElementAt(0).Length;
+
+        Dictionary<string, List<JsonElement>> sample = new();
+        foreach (string key in data.Keys)
+        {
+            sample[key] = [];
+        }
+
+        for (int i = firstIndex; i < length; i += interval)
+        {
+            foreach (string key in data.Keys)
+            {
+                JsonElement[] column = data[key];
+                sample[key].Add(column[i]);
+            }
+        }
+
+        return sample;
+    }
+
+    /// <summary>
     /// Removes all rows from the data that contain missing values and returns the number of rows removed.
     /// </summary>
     /// <returns>The number of removed rows.</returns>

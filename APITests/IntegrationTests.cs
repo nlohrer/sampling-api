@@ -172,6 +172,30 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task SystematicSamplingEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "age": [
+                19, 23, 39, 83, 54, 63, 34
+            ],
+            "name": [
+                "Alice", "Bob", "Carol", "Dave", "Erin", "Frank", "Grace"
+            ]
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SampleUrl}/systematic?interval=3", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string responseBody = await response.Content.ReadAsStringAsync();
+        string expected = $$"""
+        {"age":[19,83,34],"name":["Alice","Dave","Grace"]}
+        """;
+        Assert.Equal(expected, responseBody);
+    }
+
+    [Fact]
     public async Task StratifiedEndpointIsAlive()
     {
         string body = $$$"""

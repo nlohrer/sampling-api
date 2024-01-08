@@ -55,4 +55,47 @@ public class SampleController : ControllerBase
 
         return Ok(sample);
     }
+
+    /// <summary>
+    /// Take a systematic sample from the provided <paramref name="data"/>.
+    /// </summary>
+    /// <param name="data">The data the sample should be taken from.</param>
+    /// <param name="interval">The interval for systematic sampling. For example, given interval = 5, every fifth element is sampled.</param>
+    /// <param name="firstIndex">The index of the first element to be sampled.</param>
+    /// <returns>The drawn sample.</returns>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     POST /api/sample/systematic?interval=3
+    ///     
+    ///     {
+    ///         "age": [
+    ///             19, 23, 39, 83, 54, 63, 34
+    ///         ],
+    ///         "name": [
+    ///             "Alice", "Bob", "Carol", "Dave", "Erin", "Frank", "Grace"
+    ///         ]
+    ///     }
+    /// </remarks>
+    /// <response code="200">If the data could be sampled successfully.</response>
+    /// <response code="400">If the provided data could not be validated.</response>
+    [HttpPost("systematic")]
+    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SystematicSample([FromBody] Data data, [FromQuery] int interval, [FromQuery] int firstIndex = 0)
+    {
+        if (interval < 1)
+        {
+            ModelState.AddModelError(nameof(interval), "interval must be at least 1");
+        }
+        if (firstIndex >= interval)
+        {
+            ModelState.AddModelError(nameof(firstIndex), "firstIndex must be less than interval.");
+        }
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        Dictionary<string, List<JsonElement>> sample = _samplingService.TakeSystematicSample(data, interval, firstIndex);
+        return Ok(sample);
+    }
 }

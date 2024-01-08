@@ -67,6 +67,27 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task DataLengthAndAuxiliaryDataLengthMustBeEqual()
+    {
+        string body = $$"""
+        {
+            "data": [
+                9, 10, 11, 10
+            ],
+            "auxiliaryData": [
+                11, 11, 11
+            ],
+            "auxiliaryMean": 15,
+            "populationSize": 5,
+            "significanceLevel": 5
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{EstimatorUrl}/model?modelType=diff", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task ModelEndpointOnlyAcceptsValidModels()
     {
         string body = "";
@@ -100,6 +121,26 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         string actual = await response.Content.ReadAsStringAsync();
         string expected = "{\"mean\":18.1,\"variance\":28.810000000000016,\"confidenceInterval\":{\"lowerBound\":7.5797102701494,\"upperBound\":28.620289729850604,\"significanceLevel\":5}}";
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public async Task DataLengthAndInclusionProbabilitiesLengthMustBeEqual()
+    {
+        string body = $$$"""
+        {
+            "data": [
+                    4, 9
+                ],
+            "inclusionProbabilities": [
+                    0.05, 0.1, 0.125
+                ],
+            "populationSize": 20,
+            "significanceLevel": 5
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{EstimatorUrl}/design", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);  
     }
 
     [Fact]
@@ -185,5 +226,28 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         string actual = await response.Content.ReadAsStringAsync();
         string expected = "{\"mean\":18.75,\"variance\":2.2383333333333337,\"confidenceInterval\":{\"lowerBound\":15.817632128580499,\"upperBound\":21.6823678714195,\"significanceLevel\":5}}";
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public async Task DataLengthAndStrataLengthMustBeEqual()
+    {
+        string body = $$$"""
+        {
+            "data": [
+                9, 10, 11, 18, 22, 25
+            ],
+            "strata": [
+                "m", "m", "m", "f", "f"
+            ],
+            "stratumSizes": {
+                "m": 25,
+                "f": 75
+            },
+            "significanceLevel": 5
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{EstimatorUrl}/stratified", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 }

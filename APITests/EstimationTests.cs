@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Routing.Constraints;
+﻿using SamplingAPI.Models;
 using SamplingAPI.Services;
 using SamplingAPI.Stats;
-using System.Text.Json;
 
 namespace APITests;
 
@@ -201,7 +200,7 @@ public class EstimationTests
         IEnumerable<string> strata = ["m", "m", "m", "f", "f", "f"];
         double[] dataDrawn = data.Where((_, i) => drawn.Contains(i + 1)).ToArray();
         string[] drawnStrata = strata.Where((_, i) => drawn.Contains(i + 1)).ToArray();
-        Dictionary<string, int> stratumSizes = new() {{"m", 25}, {"f", 75}};
+        Dictionary<string, int> stratumSizes = new() { { "m", 25 }, { "f", 75 } };
 
         double actual = Math.Round(MeanFunctions.StratifiedMean(dataDrawn, drawnStrata, stratumSizes), 2);
         double expected = Math.Round(exp, 2);
@@ -224,7 +223,7 @@ public class EstimationTests
         IEnumerable<string> strata = ["m", "m", "m", "f", "f", "f"];
         double[] dataDrawn = data.Where((_, i) => drawn.Contains(i + 1)).ToArray();
         string[] drawnStrata = strata.Where((_, i) => drawn.Contains(i + 1)).ToArray();
-        Dictionary<string, int> stratumSizes = new() {{"m", 25}, {"f", 75}};
+        Dictionary<string, int> stratumSizes = new() { { "m", 25 }, { "f", 75 } };
 
         double actual = Math.Round(VarianceFunctions.StratifiedVariance(dataDrawn, drawnStrata, stratumSizes), 2);
         double expected = Math.Round(exp, 2);
@@ -286,5 +285,31 @@ public class EstimationTests
         double expected = 0.162;
 
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void CalculateSampleSizeSRSWithReplacement()
+    {
+        ISampleSizeService sampleSizeService = new SampleSizeService();
+        double ciWidth = 0.028;
+        int alpha = 5;
+        double worstCasePercentage = 0.7;
+        var parameters = new SizeParameters(ciWidth, alpha, true, WorstCasePercentage: worstCasePercentage);
+
+        int actual = sampleSizeService.GetSizeSRS(parameters);
+        Assert.Equal(1029, actual);
+    }
+
+    [Fact]
+    public void CalculateSampleSizeSRSWithoutReplacement()
+    {
+        ISampleSizeService sampleSizeService = new SampleSizeService();
+        double ciWidth = 0.01;
+        int alpha = 5;
+        double worstCasePercentage = 0.5;
+        var parameters = new SizeParameters(ciWidth, alpha, false, 50000, worstCasePercentage);
+
+        int actual = sampleSizeService.GetSizeSRS(parameters);
+        Assert.Equal(8057, actual);
     }
 }

@@ -10,11 +10,29 @@ public class GeneralFunctions
     /// <exception cref="ArgumentException">If a significance level other than the implemented ones is chosen.</exception>
     public static ConfidenceInterval CalculateConfidenceInterval(double mean, double variance, int significanceLevel)
     {
-        if (significanceLevel == 5)
+        double z = GetStandardNormalDistributionQuantile(significanceLevel);
+        double width = z * Math.Sqrt(variance);
+        return new ConfidenceInterval(mean - width, mean + width, significanceLevel);
+    }
+
+    /// <summary>
+    /// Get the <paramref name="significanceLevel"/> percentile of the standard normal distribution.
+    /// </summary>
+    /// <param name="significanceLevel">The desired significance level.</param>
+    /// <returns>The <paramref name="significanceLevel"/> percentile of the standard normal distribution.</returns>
+    /// <exception cref="NotImplementedException">If the given percentile is not 1, 5, or 10.</exception>
+    public static double GetStandardNormalDistributionQuantile(int significanceLevel)
+    {
+        switch (significanceLevel)
         {
-            double width = 1.96 * Math.Sqrt(variance);
-            return new ConfidenceInterval(mean - width, mean + width, significanceLevel);
+            case 10: 
+                return 1.64;
+            case 5:
+                return 1.96;
+            case 1:
+                return 2.58;
+            default:
+                throw new ArgumentException("Please choose a significance level of 1%, 5%, or 10%.");
         }
-        throw new ArgumentException("Wrong significance level");
     }
 }

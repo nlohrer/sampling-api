@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SamplingAPI.Models;
 using SamplingAPI.Services;
 using System.Text.Json;
 
@@ -43,8 +44,12 @@ public class SampleController : ControllerBase
     ///         ]
     ///     }
     /// </remarks>
+    /// <response code="200">If the data could be sampled successfully.</response>
+    /// <response code="400">If the provided data could not be validated.</response>
     [HttpPost("srs")]
-    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SampleSRS([FromBody] Dictionary<string, JsonElement[]> data, [FromQuery] int n, [FromQuery] bool withReplacement = true, [FromQuery] bool removeMissing = false)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<Dictionary<string, List<JsonElement>>>> SampleSRS([FromBody] Data data, [FromQuery] int n, [FromQuery] bool withReplacement = true, [FromQuery] bool removeMissing = false)
     {
         Dictionary<string, List<JsonElement>> sample = _samplingService.TakeSimpleRandomSample(data, n, withReplacement, removeMissing);
 

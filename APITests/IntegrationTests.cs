@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace APITests;
@@ -154,6 +155,20 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         string responseString = await response.Content.ReadAsStringAsync();
         Dictionary<string, List<Object>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<Object>>>(responseString);
         Assert.Equal(5, responseObject.Count);
+    }
+
+    [Fact]
+    public async Task SamplingRequiresColumnsToBeEquallyLong()
+    {
+        string body = $$$"""
+        {
+            "age": [20, 23],
+            "name": ["Angelina"]
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SampleUrl}/srs?withReplacement=true&n=3", content);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
     [Fact]

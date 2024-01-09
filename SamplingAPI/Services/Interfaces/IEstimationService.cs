@@ -1,4 +1,4 @@
-﻿using SamplingAPI.Models.DaterTransferModels;
+﻿using SamplingAPI.Models.DataTransferModels;
 using SamplingAPI.Models.SampleModels;
 
 namespace SamplingAPI.Services.Interfaces;

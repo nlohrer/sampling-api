@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel;
 using System.Text.Json;
+using SamplingAPI.Models.DataTransferModels;
 using SamplingAPI.Services.Interfaces;
 
 namespace SamplingAPI.Services;
@@ -17,10 +18,10 @@ public class SamplingService : ISamplingService
     /// <param name="withReplacement">Whether the sample should be drawn with replacement.</param>
     /// <param name="removeMissing">Whether rows with null values should not be sampled.</param>
     /// <returns>A sample drawn from the original <paramref name="data"/>.</returns>
-    public Dictionary<string, List<JsonElement>> TakeSimpleRandomSample(Dictionary<string, JsonElement[]> data, int n, bool withReplacement, bool removeMissing)
+    public Dictionary<string, List<JsonElement>> TakeSimpleRandomSample(Data data, int n, bool withReplacement, bool removeMissing)
     {
 
-        int length = data.Values.ElementAt(0).Length;
+        int length = data.Values.ElementAt(0).Count;
         if (removeMissing)
         {
             length -= RemoveRowsWithMissingValues(data);
@@ -70,9 +71,9 @@ public class SamplingService : ISamplingService
     /// <param name="interval">The interval for systematic sampling - given k = interval, every kth element will be drawn into the sample.</param>
     /// <param name="firstIndex">The first index for sampling.</param>
     /// <returns>A systematic sample drawn from the original <paramref name="data"/>.</returns>
-    public Dictionary<string, List<JsonElement>> TakeSystematicSample(Dictionary<string, JsonElement[]> data, int interval, int firstIndex = 0)
+    public Dictionary<string, List<JsonElement>> TakeSystematicSample(Data data, int interval, int firstIndex = 0)
     {
-        int length = data.Values.ElementAt(0).Length;
+        int length = data.Values.ElementAt(0).Count;
 
         Dictionary<string, List<JsonElement>> sample = new();
         foreach (string key in data.Keys)
@@ -84,7 +85,7 @@ public class SamplingService : ISamplingService
         {
             foreach (string key in data.Keys)
             {
-                JsonElement[] column = data[key];
+                List<JsonElement> column = data[key];
                 sample[key].Add(column[i]);
             }
         }
@@ -96,12 +97,12 @@ public class SamplingService : ISamplingService
     /// Removes all rows from the data that contain missing values and returns the number of rows removed.
     /// </summary>
     /// <returns>The number of removed rows.</returns>
-    private static int RemoveRowsWithMissingValues(Dictionary<string, JsonElement[]> data)
+    private static int RemoveRowsWithMissingValues(Data data)
     {
         HashSet<int> missingIndices = [];
-        foreach (JsonElement[] column in data.Values)
+        foreach (List<JsonElement> column in data.Values)
         {
-            for (int i = 0; i < column.Length; i++)
+            for (int i = 0; i < column.Count; i++)
             {
                 if (column[i].ValueKind == JsonValueKind.Null)
                 {
@@ -112,7 +113,7 @@ public class SamplingService : ISamplingService
 
         foreach (string key in data.Keys)
         {
-            data[key] = data[key].Where((_, i) => !missingIndices.Contains(i)).ToArray();
+            data[key] = data[key].Where((_, i) => !missingIndices.Contains(i)).ToList();
         }
 
         return missingIndices.Count;

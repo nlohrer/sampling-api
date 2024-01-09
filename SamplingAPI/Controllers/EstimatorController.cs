@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SamplingAPI.Models.DaterTransferModels;
+using SamplingAPI.Models.DataTransferModels;
 using SamplingAPI.Models.SampleModels;
 using SamplingAPI.Services.Interfaces;
 

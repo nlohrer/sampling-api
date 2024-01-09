@@ -1,4 +1,4 @@
-﻿namespace SamplingAPI.Models.DaterTransferModels;
+﻿namespace SamplingAPI.Models.DataTransferModels;
 
 /// <summary>
 /// An estimator containing the estimate for the mean, variance, and confidence interval for a sample.

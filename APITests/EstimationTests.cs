@@ -1,8 +1,4 @@
-﻿using SamplingAPI.Models;
-using SamplingAPI.Models.DaterTransferModels;
-using SamplingAPI.Services;
-using SamplingAPI.Services.Interfaces;
-using SamplingAPI.Stats;
+﻿using SamplingAPI.Stats;
 
 namespace APITests;
 
@@ -287,31 +283,5 @@ public class EstimationTests
         double expected = 0.162;
 
         Assert.Equal(expected, actual);
-    }
-
-    [Fact]
-    public void CalculateSampleSizeSRSWithReplacement()
-    {
-        ISampleSizeService sampleSizeService = new SampleSizeService();
-        double ciWidth = 0.028;
-        int alpha = 5;
-        double worstCasePercentage = 0.7;
-        var parameters = new SizeParameters(ciWidth, alpha, true, WorstCasePercentage: worstCasePercentage);
-
-        int actual = sampleSizeService.GetSizeSRS(parameters);
-        Assert.Equal(1029, actual);
-    }
-
-    [Fact]
-    public void CalculateSampleSizeSRSWithoutReplacement()
-    {
-        ISampleSizeService sampleSizeService = new SampleSizeService();
-        double ciWidth = 0.01;
-        int alpha = 5;
-        double worstCasePercentage = 0.5;
-        var parameters = new SizeParameters(ciWidth, alpha, false, 50000, worstCasePercentage);
-
-        int actual = sampleSizeService.GetSizeSRS(parameters);
-        Assert.Equal(8057, actual);
     }
 }

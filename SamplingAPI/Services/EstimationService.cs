@@ -1,7 +1,7 @@
 ﻿using SamplingAPI.Stats;
 using SamplingAPI.Services.Interfaces;
 using SamplingAPI.Models.SampleModels;
-using SamplingAPI.Models.DaterTransferModels;
+using SamplingAPI.Models.DataTransferModels;
 
 namespace SamplingAPI.Services;
 

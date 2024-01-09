@@ -10,6 +10,7 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     internal static readonly string EstimatorUrl = "/api/Estimator";
     internal static readonly string SampleUrl = "/api/Sample";
     internal static readonly string SizeUrl = "/api/SampleSize";
+    internal static readonly string FormatUrl = "/api/Format";
 
     public IntegrationTests(WebApplicationFactory<Program> factory)
     {
@@ -306,5 +307,38 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         HttpContent content = Helpers.GetJSONContent(body);
         var response = await _client.PostAsync($"{EstimatorUrl}/stratified", content);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task JSONArrayFormatEndpointIsAlive()
+    {
+        string body = $$$"""
+        [
+            {
+                "name": "Alice",
+                "age": 54,
+                "hasPets": false
+            },
+            {
+                "name": "Bob",
+                "age": 41,
+                "hasPets": true
+            },
+            {
+                "name": "Carol",
+                "age": 72,
+                "hasPets": true
+            }
+        ]
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{FormatUrl}/JSONArray", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string actual = await response.Content.ReadAsStringAsync();
+        string expected = $$$"""
+        {"name":["Alice","Bob","Carol"],"age":[54,41,72],"hasPets":[false,true,true]}
+        """;
+        Assert.Equal(expected, actual);
     }
 }

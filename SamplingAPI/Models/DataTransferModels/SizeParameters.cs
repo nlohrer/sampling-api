@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 
-namespace SamplingAPI.Models.DaterTransferModels;
+namespace SamplingAPI.Models.DataTransferModels;
 
 /// <summary>
 /// Represents the parameters needed to estimate the minimum number of observations to include in a sample, such that there is at least a (1 - <paramref name="Alpha"/>)% probability that the difference between the estimated mean and the actual mean is at most (<paramref name="e"/> * 100)% of the actual mean. In other words: the minimum number of observations to include such that the confidence level for the estimated mean has the width <paramref name="E"/> * 2, given significance level <paramref name="Alpha"/>.

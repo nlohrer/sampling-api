@@ -1,18 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace SamplingAPI.Models.DaterTransferModels;
+namespace SamplingAPI.Models.DataTransferModels;
 
 /// <summary>
 /// Represents generic tabular data.
 /// </summary>
-public class Data : Dictionary<string, JsonElement[]>, IValidatableObject
+public class Data : Dictionary<string, List<JsonElement>>, IValidatableObject
 {
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (Count > 0)
         {
-            var lengths = Values.Select(column => column.Length);
+            var lengths = Values.Select(column => column.Count);
             int firstLength = lengths.First();
 
             if (lengths.Any(length => length != firstLength))

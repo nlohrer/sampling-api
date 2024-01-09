@@ -5,6 +5,9 @@ using SamplingAPI.Models.DataTransferModels;
 
 namespace SamplingAPI.Services;
 
+/// <summary>
+/// Provides methods for generating estimators from samples.
+/// </summary>
 public class EstimationService : IEstimationService
 {
     /// <summary>

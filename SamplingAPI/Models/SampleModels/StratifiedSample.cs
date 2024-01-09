@@ -11,6 +11,9 @@ namespace SamplingAPI.Models.SampleModels;
 /// <param name="SignificanceLevel">The desired significance level (as percentage) for the returned confidence interval.</param>
 public record StratifiedSample(double[] Data, string[] Strata, Dictionary<string, int> StratumSizes, int SignificanceLevel) : IValidatableObject
 {
+    /// <summary>
+    /// Determines whether the data is valid.
+    /// </summary>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (Data.Length != Strata.Length)

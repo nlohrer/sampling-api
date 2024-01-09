@@ -161,7 +161,8 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
-        Dictionary<string, List<double>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(responseString);
+        Dictionary<string, List<double>>? responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<double>>>(responseString);
+        Assert.NotNull(responseObject);
 
         Assert.Equal(6, responseObject.Values.ElementAt(0).Count);
     }
@@ -183,7 +184,9 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         string responseString = await response.Content.ReadAsStringAsync();
-        Dictionary<string, List<Object>> responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<Object>>>(responseString);
+        Dictionary<string, List<object>>? responseObject = JsonConvert.DeserializeObject<Dictionary<string, List<Object>>>(responseString);
+        Assert.NotNull(responseObject);
+
         Assert.Equal(5, responseObject.Count);
     }
 

@@ -46,7 +46,7 @@ public class SampleSizeController : ControllerBase
     [HttpPost("srs")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<int>> SRSSize(SizeParameters parameters)
+    public ActionResult<int> SRSSize(SizeParameters parameters)
     {
         int count = _sizeService.GetSizeSRS(parameters);
         return Ok(count);

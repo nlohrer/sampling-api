@@ -3,6 +3,9 @@ using System.Text.Json;
 
 namespace SamplingAPI.Services.Interfaces;
 
+/// <summary>
+/// Provides methods for taking samples from data.
+/// </summary>
 public interface ISamplingService
 {
     /// <summary>

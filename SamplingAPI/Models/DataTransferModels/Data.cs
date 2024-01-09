@@ -8,6 +8,9 @@ namespace SamplingAPI.Models.DataTransferModels;
 /// </summary>
 public class Data : Dictionary<string, List<JsonElement>>, IValidatableObject
 {
+    /// <summary>
+    /// Determines whether the data is valid.
+    /// </summary>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (Count > 0)

@@ -3,6 +3,9 @@ using SamplingAPI.Models.SampleModels;
 
 namespace SamplingAPI.Services.Interfaces;
 
+/// <summary>
+/// Provides methods for generating estimators from samples.
+/// </summary>
 public interface IEstimationService
 {
     /// <summary>
@@ -15,7 +18,7 @@ public interface IEstimationService
     /// <summary>
     /// Estimate the mean of a population from a sample based on a  model.
     /// </summary>
-    /// <param name="srs">A SimpleRandom object representing the sample data and additional information required for estimation.</param>
+    /// <param name="sample">A ModelSample object representing the sample data and additional information required for estimation.</param>
     /// <param name="modelType">The type of model that should be used for the estimation.</param>
     /// <returns>An estimator for the mean of the entire population.</returns>
     Estimator EstimateModel(ModelSample sample, ModelType modelType);

@@ -4,8 +4,16 @@ using System.Text.Json;
 
 namespace SamplingAPI.Services;
 
+/// <summary>
+/// Provides methods for formatting data into the format used by this API.
+/// </summary>
 public class FormatService : IFormatService
 {
+    /// <summary>
+    /// Formats delimiter-seperated values into the format used by this API.
+    /// </summary>
+    /// <param name="data">A DelimitedData object representing the string containing the data as well as additional information for formatting the data.</param>
+    /// <returns>A Dictionary with data in the format used by this API.</returns>
     public Data FormatDelimited(DelimitedData data)
     {
         throw new NotImplementedException();

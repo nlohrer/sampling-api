@@ -2,6 +2,9 @@
 
 namespace SamplingAPI.Stats;
 
+/// <summary>
+/// Methods for estimating the variance of a population.
+/// </summary>
 public class VarianceFunctions
 {
     /// <summary>

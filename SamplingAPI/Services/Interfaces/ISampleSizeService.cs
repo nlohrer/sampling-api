@@ -2,6 +2,9 @@
 
 namespace SamplingAPI.Services.Interfaces;
 
+/// <summary>
+/// Provides methods for calculating sample sizes.
+/// </summary>
 public interface ISampleSizeService
 {
     /// <summary>

@@ -39,4 +39,6 @@ app.MapControllers();
 
 app.Run();
 
+/// <summary>
+/// </summary>
 public partial class Program { }

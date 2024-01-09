@@ -1,11 +1,12 @@
-﻿
-using System.ComponentModel;
-using System.Text.Json;
-using SamplingAPI.Models.DataTransferModels;
+﻿using SamplingAPI.Models.DataTransferModels;
 using SamplingAPI.Services.Interfaces;
+using System.Text.Json;
 
 namespace SamplingAPI.Services;
 
+/// <summary>
+/// Provides methods for taking samples from data.
+/// </summary>
 public class SamplingService : ISamplingService
 {
     Random random = new Random();
@@ -44,7 +45,8 @@ public class SamplingService : ISamplingService
                 .Range(0, length)
                 .OrderBy(i => random.Next())
                 .Take(n);
-        } else
+        }
+        else
         {
             randomNumbers = new List<int>();
             for (int _ = 0; _ < n; _++)
@@ -55,7 +57,7 @@ public class SamplingService : ISamplingService
 
         foreach (int rand in randomNumbers)
         {
-            foreach(string key in data.Keys)
+            foreach (string key in data.Keys)
             {
                 sample[key].Add(data[key].ElementAt(rand));
             }

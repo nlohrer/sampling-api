@@ -1,9 +1,11 @@
 ﻿using SamplingAPI.Models.DataTransferModels;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace SamplingAPI.Services.Interfaces;
 
+/// <summary>
+/// Provides methods for formatting data into the format used by this API.
+/// </summary>
 public interface IFormatService
 {
     /// <summary>

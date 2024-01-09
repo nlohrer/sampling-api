@@ -13,6 +13,9 @@ namespace SamplingAPI.Models.SampleModels;
 /// <param name="SignificanceLevel">The desired significance level (as percentage) for the returned confidence interval.</param>
 public record ClusterSample(double[] Data, int[]? ClusterSizes, int PopulationSize, int ClusterCount, int TotalClusterCount, int SignificanceLevel) : IValidatableObject
 {
+    /// <summary>
+    /// Determines whether the data is valid.
+    /// </summary>
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (ClusterSizes is not null && Data.Length != ClusterSizes.Length)

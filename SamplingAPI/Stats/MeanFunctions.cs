@@ -1,5 +1,8 @@
 ﻿namespace SamplingAPI.Stats;
 
+/// <summary>
+/// Methods for estimating the mean of a population.
+/// </summary>
 public class MeanFunctions
 {
     /// <summary>

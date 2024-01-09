@@ -45,7 +45,7 @@ public class FormatController : ControllerBase
     ///     ]
     /// </remarks>
     [HttpPost("JSONArray")]
-    public async Task<ActionResult<Data>> FormatJSONArray([FromBody] Dictionary<string, JsonElement>[] data)
+    public ActionResult<Data> FormatJSONArray([FromBody] Dictionary<string, JsonElement>[] data)
     {
         Data result = _formatService.FormatJsonObjectArray(data);
         return Ok(result);

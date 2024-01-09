@@ -2,6 +2,9 @@
 
 namespace SamplingAPI.Stats;
 
+/// <summary>
+/// Miscellaneous statistics-related functions.
+/// </summary>
 public class GeneralFunctions
 {
     /// <summary>

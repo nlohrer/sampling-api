@@ -43,7 +43,7 @@ public class EstimatorController : ControllerBase
     ///     }
     /// </remarks>
     [HttpPost("srs")]
-    public async Task<ActionResult<Estimator>> EstimateSRS(SimpleRandomSample srs)
+    public ActionResult<Estimator> EstimateSRS(SimpleRandomSample srs)
     {
         Estimator result = EstimationService.EstimateSRS(srs);
         return Ok(result);
@@ -77,7 +77,7 @@ public class EstimatorController : ControllerBase
     [HttpPost("model")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Estimator>> EstimateModelBased(ModelSample sample, [FromQuery] ModelType modelType)
+    public ActionResult<Estimator> EstimateModelBased(ModelSample sample, [FromQuery] ModelType modelType)
     {
         Estimator result = EstimationService.EstimateModel(sample, modelType);
         return Ok(result);
@@ -110,7 +110,7 @@ public class EstimatorController : ControllerBase
     [HttpPost("design")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Estimator>> EstimateDesignBased(DesignSample sample)
+    public ActionResult<Estimator> EstimateDesignBased(DesignSample sample)
     {
         Estimator result = EstimationService.EstimateDesign(sample);
         return Ok(result);
@@ -145,7 +145,7 @@ public class EstimatorController : ControllerBase
     [HttpPost("stratified")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Estimator>> EstimateStratified(StratifiedSample sample)
+    public ActionResult<Estimator> EstimateStratified(StratifiedSample sample)
     {
         Estimator result = EstimationService.EstimateStratified(sample);
         return Ok(result);
@@ -180,7 +180,7 @@ public class EstimatorController : ControllerBase
     [HttpPost("cluster")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<Estimator>> EstimateCluster(ClusterSample sample, [FromQuery] bool equalSizes=true)
+    public ActionResult<Estimator> EstimateCluster(ClusterSample sample, [FromQuery] bool equalSizes = true)
     {
         Estimator result = EstimationService.EstimateCluster(sample, equalSizes);
         return Ok(result);

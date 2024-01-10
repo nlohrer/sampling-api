@@ -41,6 +41,51 @@ public class ServiceTests
         Assert.Equal(8057, actual);
     }
 
+    [Fact]
+    public void CalculateStratumSizes()
+    {
+        int sampleSize = 40;
+        int[] stratumTotalSizes = [200, 50];
+        string[] stratumNames = ["s", "p"];
+
+        var parameters = new StratifiedDistributionParameters(stratumNames, sampleSize, stratumTotalSizes, null, null);
+
+        var actual = sampleSizeService.GetStratifiedDistribution(parameters);
+        Dictionary<string, int> expected = new() { { "s", 32 }, { "p", 8 } };
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void CalculateStratumSizesWithVariances()
+    {
+        int sampleSize = 40;
+        int[] stratumTotalSizes = [200, 50];
+        double[] stratumVariances = [1000000, 81000000];
+        string[] stratumNames = ["s", "p"];
+
+        var parameters = new StratifiedDistributionParameters(stratumNames, sampleSize, stratumTotalSizes, stratumVariances, null);
+
+        var actual = sampleSizeService.GetStratifiedDistribution(parameters);
+        Dictionary<string, int> expected = new() { { "s", 12 }, { "p", 28 } };
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void CalculateStratumSizesWithCosts()
+    {
+        int sampleSize = 40;
+        int[] stratumTotalSizes = [200, 50];
+        double[] stratumVariances = [1000000, 81000000];
+        double[] stratumCosts = [49, 144];
+        string[] stratumNames = ["s", "p"];
+
+        var parameters = new StratifiedDistributionParameters(stratumNames, sampleSize, stratumTotalSizes, stratumVariances, stratumCosts);
+
+        var actual = sampleSizeService.GetStratifiedDistribution(parameters);
+        Dictionary<string, int> expected = new() { { "s", 17 }, { "p", 23 } };
+        Assert.Equal(expected, actual);
+    }
+
     //[Fact]
     //public void FormatCSV()
     //{

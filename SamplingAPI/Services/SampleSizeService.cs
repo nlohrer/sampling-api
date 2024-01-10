@@ -1,4 +1,5 @@
-﻿using SamplingAPI.Models.DataTransferModels;
+﻿using Microsoft.AspNetCore.Routing.Constraints;
+using SamplingAPI.Models.DataTransferModels;
 using SamplingAPI.Services.Interfaces;
 using SamplingAPI.Stats;
 
@@ -34,5 +35,33 @@ public class SampleSizeService : ISampleSizeService
                 (Math.Pow(e / z, 2) + s / N);
             return (int)Math.Ceiling(exactResult);
         }
+    }
+
+    /// <summary>
+    /// Determines how many observations to include per stratum for a stratified sample.
+    /// </summary>
+    /// <param name="parameters">A StratifiedDistributionParameters object representing the parameters needed to determine the stratum sizes.</param>
+    /// <returns>The number of observations to include for each stratum.</returns>
+    public Dictionary<string, int> GetStratifiedDistribution(StratifiedDistributionParameters parameters)
+    {
+        if (parameters.StratumNames is null)
+        {
+            throw new NotImplementedException("Please provide stratum names");
+        }
+        IEnumerable<double> varianceFactor = parameters.StratumVariances is not null
+            ? parameters.StratumVariances.AsEnumerable()
+            : Enumerable.Repeat(1.0, parameters.StratumTotalSizes.Length);
+        IEnumerable<double> costFactor = parameters.StratumVariances is not null && parameters.StratumCosts is not null
+            ? parameters.StratumCosts.AsEnumerable()
+            : Enumerable.Repeat(1.0, parameters.StratumTotalSizes.Length);
+
+        IEnumerable<(int N_h, double S_h, double c_h)> zippedData = parameters.StratumTotalSizes.Zip(varianceFactor, costFactor);
+
+        IEnumerable<double> stratumProducts = zippedData.Select(tuple => (tuple.N_h * Math.Sqrt(tuple.S_h)) / Math.Sqrt(tuple.c_h));
+        double totalSum = stratumProducts.Sum();
+
+        IEnumerable<int> stratumSizes = stratumProducts.Select(product => (int) Math.Round(parameters.SampleSize * product / totalSum));
+
+        return parameters.StratumNames.Zip(stratumSizes).ToDictionary();
     }
 }

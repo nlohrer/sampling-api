@@ -248,6 +248,37 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task StratifiedSampleDistributionEndpointIsAlive()
+    {
+        string body = $$$"""
+        {
+            "stratumNames": [
+                "b", "m", "s"
+            ],
+            "sampleSize": 50,
+            "stratumTotalSizes": [
+                40, 100, 220
+            ],
+            "stratumVariances": [
+                250, 120, 50
+            ],
+            "stratumCosts": [
+                130, 80, 60
+            ]
+        }
+        """;
+        HttpContent content = Helpers.GetJSONContent(body);
+        var response = await _client.PostAsync($"{SizeUrl}/stratified/distribution", content);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        string responseBody = await response.Content.ReadAsStringAsync();
+        string expected = """
+            {"b":7,"m":16,"s":27}
+            """;
+        Assert.Equal(expected, responseBody);
+    }
+
+    [Fact]
     public async Task DeterminingSizeWithoutReplacementRequiresSpezifyingPopulationSize()
     {
         string body = $$$"""

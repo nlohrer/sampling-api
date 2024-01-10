@@ -44,9 +44,13 @@ public class SampleSizeService : ISampleSizeService
     /// <returns>The number of observations to include for each stratum.</returns>
     public Dictionary<string, int> GetStratifiedDistribution(StratifiedDistributionParameters parameters)
     {
+        IEnumerable<string> names;
         if (parameters.StratumNames is null)
         {
-            throw new NotImplementedException("Please provide stratum names");
+            names = Enumerable.Range(1, parameters.StratumTotalSizes.Length).Select(num => $"stratum{num}");
+        } else
+        {
+            names = parameters.StratumNames;
         }
         IEnumerable<double> varianceFactor = parameters.StratumVariances is not null
             ? parameters.StratumVariances.AsEnumerable()
@@ -62,6 +66,5 @@ public class SampleSizeService : ISampleSizeService
 
         IEnumerable<int> stratumSizes = stratumProducts.Select(product => (int) Math.Round(parameters.SampleSize * product / totalSum));
 
-        return parameters.StratumNames.Zip(stratumSizes).ToDictionary();
-    }
-}
+        return names.Zip(stratumSizes).ToDictionary();
+    }}
